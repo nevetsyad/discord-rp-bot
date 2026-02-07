@@ -1,0 +1,27 @@
+{
+  "name": "discord-rp-bot",
+  "version": "1.0.0",
+  "description": "A Discord Roleplay Bot with character management, dice rolling, and scene management",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "setup": "node setup.js"
+  },
+  "keywords": ["discord", "roleplay", "bot", "rpg"],
+  "author": "Your Name",
+  "license": "MIT",
+  "dependencies": {
+    "discord.js": "^14.14.1",
+    "dotenv": "^16.3.1",
+    "mysql2": "^3.6.3",
+    "sequelize": "^6.35.1",
+    "node-cache": "^5.1.2",
+    "chalk": "^4.1.2",
+    "moment": "^2.29.4",
+    "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  }
+}
