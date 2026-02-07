@@ -10,7 +10,7 @@ console.log('🎲 Testing Dice Parser Component...');
 try {
   const diceCode = `
     function parseDiceNotation(diceString) {
-      const regex = /^(\d+)d(\d+)(?:([+-]\d+))?$/;
+      const regex = /^([0-9]+)d([0-9]+)([+-][0-9]+)?$/;
       const match = diceString.match(regex);
       if (!match) {
         throw new Error('Invalid dice notation');
@@ -231,7 +231,11 @@ try {
     testMessages.forEach(({ text, expected }) => {
       const result = validateMessageFormat(text);
       const status = (result.valid === expected) ? '✅' : '❌';
-      console.log(\`  \${status} \${text ? text.substring(0, 20) + '...' : 'null'} - expected \${expected}, got \${result.valid}\`);
+      const displayText = (typeof text === 'string' && text.length > 20) ? text.substring(0, 20) + '...' : 
+                     text === null ? 'null' : 
+                     typeof text === 'string' ? text : 
+                     String(text);
+      console.log(\`  \${status} \${displayText} - expected \${expected}, got \${result.valid}\`);
     });
   `;
   
