@@ -1,5 +1,5 @@
 const { Events } = require('discord.js');
-const { User } = require('../database');
+const { User, ShadowrunCharacter } = require('../database');
 
 module.exports = {
   name: Events.InteractionCreate,

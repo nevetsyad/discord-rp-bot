@@ -28,6 +28,17 @@ for (const file of commandFiles) {
   commands.set(command.data.name, command);
 }
 
+// Load database and models
+const sequelize = require('./database');
+const { ShadowrunCharacter } = require('./models');
+
+// Sync database
+sequelize.sync({ alter: true }).then(() => {
+  console.log('Database synchronized successfully.');
+}).catch(err => {
+  console.error('Error synchronizing database:', err);
+});
+
 // Event handlers
 const eventsPath = path.join(__dirname, 'events');
 const eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith('.js'));

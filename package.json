@@ -1,7 +1,7 @@
 {
   "name": "discord-rp-bot",
-  "version": "1.2.1",
-  "description": "A Discord Roleplay Bot with character management, dice rolling, and scene management",
+  "version": "0.1.3.0",
+  "description": "A Discord Shadowrun 3rd Edition Roleplay Game Master Bot with character creation, combat system, dice rolling, and scene management",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
@@ -10,7 +10,7 @@
     "setup:interactive": "node setup-interactive.js",
     "setup:mysql": "node setup-interactive-mysql.js"
   },
-  "keywords": ["discord", "roleplay", "bot", "rpg"],
+  "keywords": ["discord", "roleplay", "bot", "rpg", "shadowrun", "shadowrun3", "shadowrun-3rd-edition", "tabletop-rpg", "gm-bot", "game-master"],
   "author": "Your Name",
   "license": "MIT",
   "dependencies": {
