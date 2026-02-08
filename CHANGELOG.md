@@ -95,7 +95,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Testing: SHADOWRUN_PHASE1_PURE_CHECK.js with 100% test coverage
 - Documentation: Complete Shadowrun Phase 1 guide and API documentation
 
-## [1.2.1] - 2026-02-07
+## [0.1.3.0] - 2026-02-07
 ### Added
 - MySQL installation automation with cross-platform support
 - Interactive setup scripts for easy configuration
@@ -105,7 +105,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Comprehensive documentation and release management
 - Bug fix for dice parser regex pattern
 - Enhanced message validation to handle null and non-string values
-- Version 1.2.1 tagged and pushed to GitHub
+- Version 0.1.3.0 tagged and pushed to GitHub
 
 ### Changed
 - Updated README.md with installation instructions for both setup methods

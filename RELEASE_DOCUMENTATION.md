@@ -1,6 +1,6 @@
 # Discord RP Bot - Complete Release Documentation
 
-## Version 1.2.1 - Full Release
+## Version 0.1.3.0 - Shadowrun 3rd Edition Complete
 
 ### 📋 Release Summary
 A comprehensive Discord roleplay bot with character management, dice rolling, scene organization, and Game Master tools. This release includes complete MySQL installation automation and enhanced user experience.
@@ -268,5 +268,5 @@ This project is licensed under the MIT License. See the LICENSE file for details
 
 **Maintained by:** nevetsyad  
 **Repository:** https://github.com/nevetsyad/discord-rp-bot  
-**Version:** 1.2.1  
+**Version:** 0.1.3.0  
 **Last Updated:** 2026-02-07
