@@ -54,14 +54,22 @@ A comprehensive Discord roleplay bot with character management, dice rolling, sc
 
 3. **Configure environment variables** (choose one method):
 
-   **Method 1: Interactive Setup (Recommended)**
+   **Method 1: Interactive Setup with MySQL (Recommended)**
+   ```bash
+   npm run setup:mysql
+   ```
+   
+   This will guide you through MySQL installation, configuration, and all required settings automatically.
+   
+   **Method 2: Basic Interactive Setup**
    ```bash
    npm run setup:interactive
    ```
    
    This will guide you through all the required configuration steps and automatically create the `.env` file.
+   Assumes MySQL is already installed and configured.
 
-   **Method 2: Manual Setup**
+   **Method 3: Manual Setup**
    ```bash
    cp .env.example .env
    ```
@@ -144,7 +152,17 @@ The bot uses MySQL with Sequelize ORM. The main tables are:
 - Validates environment variables
 
 ### Interactive Setup (`npm run setup:interactive`)
+- **For users with existing MySQL**
+- Prompts for all required configuration values
+- Automatically creates the `.env` file
+- Validates all settings before saving
+- Tests all connections during setup
+
+### Complete Setup with MySQL (`npm run setup:mysql`)
 - **Recommended for new users**
+- **Installs MySQL automatically** based on your operating system
+- **Configures MySQL security settings**
+- **Creates database and user account**
 - Prompts for all required configuration values
 - Automatically creates the `.env` file
 - Validates all settings before saving
