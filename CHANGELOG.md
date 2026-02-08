@@ -60,6 +60,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.2.0] - 2026-02-07
+
+### Added
+- 🎤 Interactive setup script (`setup-interactive.js`) for guided configuration
+- 📝 Environment variable prompts during setup process
+- 📄 Automated .env file creation with validation
+- 🔍 Enhanced setup experience with clear instructions
+- ✅ Setup validation testing for database and Discord connections
+- 📋 User-friendly setup commands in package.json
+
+### Changed
+- 🔧 Updated setup.js to be a configuration test tool
+- 📚 Enhanced README.md with setup instructions for both methods
+- 💬 Improved error messages and user guidance
+- 📖 Added setup option descriptions in documentation
+
+### Fixed
+- 🚫 Better error handling for missing configuration files
+- 🔍 Clearer distinction between setup methods
+- ✅ Improved validation of user inputs during setup
+
+---
+
 ## [1.0.0] - 2026-02-07
 
 ### Added

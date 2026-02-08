@@ -2,6 +2,8 @@
 
 A comprehensive Discord roleplay bot with character management, dice rolling, scene organization, and Game Master tools.
 
+**Version 1.2.0** - Now with interactive setup! 🎤
+
 ## Features
 
 ### 🎭 Character Management
@@ -50,7 +52,16 @@ A comprehensive Discord roleplay bot with character management, dice rolling, sc
    npm install
    ```
 
-3. **Configure environment variables**
+3. **Configure environment variables** (choose one method):
+
+   **Method 1: Interactive Setup (Recommended)**
+   ```bash
+   npm run setup:interactive
+   ```
+   
+   This will guide you through all the required configuration steps and automatically create the `.env` file.
+
+   **Method 2: Manual Setup**
    ```bash
    cp .env.example .env
    ```
@@ -124,6 +135,20 @@ The bot uses MySQL with Sequelize ORM. The main tables are:
 - **scenes** - Scene information and metadata
 - **dice_rolls** - Dice roll history
 - **character_scenes** - Many-to-many relationship between characters and scenes
+
+## Setup Options
+
+### Basic Setup (`npm run setup`)
+- Tests existing configuration
+- Verifies database and Discord connections
+- Validates environment variables
+
+### Interactive Setup (`npm run setup:interactive`)
+- **Recommended for new users**
+- Prompts for all required configuration values
+- Automatically creates the `.env` file
+- Validates all settings before saving
+- Tests all connections during setup
 
 ## Development
 

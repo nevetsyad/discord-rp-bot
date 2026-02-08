@@ -1,6 +1,7 @@
 const { Client, GatewayIntentBits } = require('discord.js');
 const { sequelize } = require('./database');
 const dotenv = require('dotenv');
+const fs = require('fs');
 
 dotenv.config();
 
@@ -16,7 +17,25 @@ const client = new Client({
 
 async function setupBot() {
   try {
-    console.log('Setting up Discord RP Bot...');
+    console.log('🔧 Discord RP Bot - Configuration Test');
+    console.log('=====================================');
+    
+    // Check if .env file exists
+    if (!fs.existsSync('.env')) {
+      console.log('❌ .env file not found!');
+      console.log('💡 Please run "npm run setup:interactive" to create your configuration file.');
+      console.log('💡 Or manually create a .env file based on .env.example');
+      process.exit(1);
+    }
+    
+    console.log('🔍 Testing configuration...');
+    
+    // Check for required environment variables
+    if (!process.env.DISCORD_TOKEN) {
+      console.error('❌ DISCORD_TOKEN not found in environment variables!');
+      console.log('💡 Please run "npm run setup:interactive" to configure your bot.');
+      process.exit(1);
+    }
     
     // Test database connection
     await sequelize.authenticate();
@@ -31,13 +50,16 @@ async function setupBot() {
     console.log('✅ Bot logged in successfully');
     
     // Set bot status
-    client.user.setActivity('RP Bot Setup Complete! 🎲', { type: 'PLAYING' });
+    client.user.setActivity('RP Bot Ready! 🎲', { type: 'PLAYING' });
     
-    console.log('🎉 Setup complete! The bot is ready to use.');
-    console.log('💡 Make sure to configure your .env file with your Discord bot token and other settings.');
+    console.log('\n🎉 Configuration test complete! Your bot is ready to use.');
+    console.log('💡 Start the bot with: npm start');
+    console.log('💡 Or run in development mode with: npm run dev');
     
   } catch (error) {
-    console.error('❌ Setup failed:', error);
+    console.error('❌ Configuration test failed:', error.message);
+    console.log('\n🔧 Please check your .env file and make sure all values are correct.');
+    console.log('💡 You can also run "npm run setup:interactive" to recreate your configuration.');
     process.exit(1);
   }
 }
