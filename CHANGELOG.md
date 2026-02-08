@@ -89,6 +89,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.2.1] - 2026-02-07
+
+### Added
+- 🗄️ **MySQL Installation Script** (`setup-interactive-mysql.js`) with automatic MySQL installation and configuration
+- 🔄 MySQL installation support for Homebrew, APT, YUM, Chocolatey, and manual installation options
+- 🔒 MySQL security configuration with secure installation
+- 🖥️ Automatic platform detection and appropriate package manager selection
+- 🛡️ Enhanced error handling for installation failures
+- 📋 MySQL installation status checking and validation
+
+### Changed
+- 🔧 Enhanced setup experience with platform-specific installation methods
+- 📚 Updated README.md with complete MySQL installation guide
+- 📝 Improved error messages and user guidance during setup
+- 🎯 Better fallback handling for installation failures
+
+### Fixed
+- 🖥️ Cross-platform compatibility issues resolved
+- 🔧 MySQL service startup and configuration problems
+- 📋 Environment variable cleanup after MySQL setup
+- 🚫 Installation rollback mechanisms for failed setups
+
+---
+
 ## [1.0.0] - 2026-02-07
 
 ### Added

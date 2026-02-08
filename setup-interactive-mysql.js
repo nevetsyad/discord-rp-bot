@@ -25,6 +25,16 @@ function commandExists(command) {
   }
 }
 
+function getPlatform() {
+  const platform = process.platform;
+  const arch = process.arch;
+  
+  if (platform === 'darwin') return 'macOS';
+  if (platform === 'linux') return 'Linux';
+  if (platform === 'win32') return 'Windows';
+  return platform;
+}
+
 async function checkAndInstallMySQL() {
   console.log('\n🗄️  MySQL Database Setup');
   console.log('=========================');
@@ -242,7 +252,8 @@ async function configureMySQLSecurity() {
 }
 
 async function setupBot() {
-  console.log('🎲 Discord RP Bot - Interactive Setup');
+  const platform = getPlatform();
+  console.log(`🎲 Discord RP Bot - Interactive Setup (${platform})`);
   console.log('=====================================\n');
   
   // Check if .env file already exists
