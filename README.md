@@ -2,7 +2,7 @@
 
 A comprehensive Discord roleplay bot with character management, dice rolling, scene organization, and Game Master tools.
 
-**Version 0.1.3.0** - Shadowrun 3rd Edition Phase 1 Complete! 🎲
+**Version 0.1.4.0** - Shadowrun 3rd Edition Phase 3 Combat System Complete! ⚔️
 
 ## Features
 
@@ -30,6 +30,15 @@ A comprehensive Discord roleplay bot with character management, dice rolling, sc
 - NPC creation and management
 - Scene status monitoring
 - Time advancement tracking
+
+### ⚔️ Shadowrun 3rd Edition (Full Implementation)
+- **Character Creation**: Complete priority system (A-E) with 5 meta-human races (Human, Elf, Dwarf, Ork, Troll)
+- **Archetypes**: 6 archetypes (Mage, Street Samurai, Shaman, Rigger, Decker, Physical Adept) with recommended attributes
+- **Karma System**: Attribute advancement with proper costs and progression
+- **Dice Mechanics**: Shadowrun-specific success counting (5+), glitch detection, and edge cases
+- **Combat System**: Complete combat with initiative passes, combat pool allocation, stun/physical damage
+- **Specialized Rolls**: Spellcasting, conjuring, decking, and combat maneuvers
+- **Character Sheets**: Detailed character sheet generation with derived stats
 
 ## Installation
 
@@ -129,6 +138,30 @@ A comprehensive Discord roleplay bot with character management, dice rolling, sc
 - `/gm create_npc` - Create a non-player character
 - `/gm scene_status` - Check current scene status
 - `/gm advance_time` - Advance time in the scene
+
+### Shadowrun Commands
+- `/character create-shadowrun` - Create new Shadowrun characters
+- `/character list-shadowrun` - List all Shadowrun characters
+- `/character view-shadowrun` - View character details
+- `/character spend-karma` - Improve attributes with karma
+- `/character show-sheet` - Display full character sheet
+- `/character delete-shadowrun` - Delete characters
+- `/shadowrun-dice basic` - Basic dice pool rolls
+- `/shadowrun-dice combat` - Combat pool allocation
+- `/shadowrun-dice spellcasting` - Spellcasting rolls
+- `/shadowrun-dice conjuring` - Conjuring rolls
+- `/shadowrun-dice decking` - Decking rolls
+- `/shadowrun-dice initiative` - Calculate initiative
+
+### Combat Commands
+- `/combat-start` - Initiate combat session
+- `/combat-initiative` - Calculate initiative order
+- `/combat-attack` - Perform attack actions
+- `/combat-status` - Check current combat status
+- `/combat-damage` - Apply damage to characters
+- `/combat-heal` - Apply healing to characters
+- `/combat-pool` - Manage combat pool allocation
+- `/combat-end` - End combat session
 
 ### Help Commands
 - `/help` - Get general help

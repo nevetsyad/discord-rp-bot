@@ -174,3 +174,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Initial setup and configuration issues
 - Basic Discord integration problems
+## [0.1.4.0] - 2026-02-08
+
+### Added
+- Complete Phase 3: Combat System Implementation
+- ShadowrunCombat model with full combat mechanics
+- Initiative calculation system with passes
+- Combat pool management (offense/defense allocation)
+- Damage and healing system (stun vs physical damage)
+- Condition monitors with knockdown rules
+- Combat phase management (ready → action → defend → damage → end)
+- Combat logging system for tracking all actions
+- Special combat maneuvers: called shots, full auto bursts
+- Attack and defense test systems with success counting
+- Error handling for combat pool allocation
+- Discord combat commands: combat-start, combat-initiative, combat-attack, combat-status
+- Additional combat commands: combat-damage, combat-heal, combat-pool, combat-end
+- Comprehensive test suite with 11 test categories, 100% pass rate
+- GLM prompt optimization system for reduced token usage (48% savings)
+

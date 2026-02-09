@@ -26,6 +26,7 @@ const Scene = require('./models/Scene')(sequelize);
 const DiceRoll = require('./models/DiceRoll')(sequelize);
 const CharacterScene = require('./models/CharacterScene')(sequelize);
 const ShadowrunCharacter = require('./models/ShadowrunCharacter')(sequelize);
+const ShadowrunCombat = require('./models/ShadowrunCombat')(sequelize);
 const { Combat, CombatParticipant, CombatAction } = require('./models/Combat')(sequelize);
 
 // Define relationships
@@ -71,6 +72,7 @@ const db = {
   DiceRoll,
   CharacterScene,
   ShadowrunCharacter,
+  ShadowrunCombat,
   Combat,
   CombatParticipant,
   CombatAction
@@ -85,4 +87,5 @@ sequelize.sync({ alter: true })
     console.error('Error synchronizing database:', err);
   });
 
-module.exports = db;
+module.exports = db;ShadowrunCharacter.hasMany(ShadowrunCombat, { foreignKey: 'character_id' });
+ShadowrunCombat.belongsTo(ShadowrunCharacter, { foreignKey: 'character_id' });

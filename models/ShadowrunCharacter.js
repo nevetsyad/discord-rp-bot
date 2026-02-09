@@ -201,31 +201,95 @@ const STARTING_KARMA = {
   Troll: 0
 };
 
+// Define complete Shadowrun 3rd Edition skills
+const SHADOWRUN_SKILLS = {
+  // ACTIVE SKILLS
+  combat: [
+    'assaultrifles', 'clubs', 'cyberimplantcombat', 'edgedweapons', 'gunnery',
+    'heavyweapons', 'laserweapons', 'launchweapons', 'pistols', 'polearms',
+    'projectileweapons', 'rifles', 'shotguns', 'submachineguns', 'throwingweapons',
+    'unarmedcombat', 'underwatercombat', 'whips'
+  ],
+  magical: [
+    'aurareading', 'sorcery', 'conjuring', 'astralperception', 'spellcasting', 'enchanting'
+  ],
+  physical: [
+    'athletics', 'climbing', 'diving', 'running', 'swimming', 'stealth', 'survival'
+  ],
+  social: [
+    'etiquette', 'instruction', 'interrogation', 'intimidation', 'leadership', 'negotiation',
+    'persuasion', 'seduction', 'streetknowledge'
+  ],
+  technical: [
+    'biotech', 'computer', 'demolitions', 'electronics', 'engineering', 'espionage',
+    'forgery', 'perception', 'investigation', 'research', 'security', 'tracking'
+  ],
+  vehicle: [
+    'airship', 'bike', 'boat', 'car', 'hovercraft', 'ltaaircraft', 'motorcycle',
+    'submarine', 'surfacecraft', 'vtol', 'wingsuit'
+  ],
+  
+  // KNOWLEDGE SKILLS
+  knowledge: [
+    'art', 'business', 'chemistry', 'currentevents', 'earthsciences', 'education',
+    'entertainment', 'finance', 'geography', 'history', 'law', 'philosophy',
+    'physics', 'popularculture', 'psychology', 'sociology', 'streetknowledge',
+    'theology', 'wildernesssurvival'
+  ],
+  
+  // LANGUAGE SKILLS
+  languages: [
+    'english', 'japanese', 'french', 'german', 'spanish', 'russian', 'chinese',
+    'arabic', 'sanskrit', 'elvish', 'dwarven', 'orkish', 'troll', 'siouan',
+    'salish', 'nahuatl', 'arapaho', 'greek', 'latin', 'arabic', 'hebrew'
+  ],
+  
+  // BUILD/REPAIR SKILLS
+  buildrepair: {
+    combat: [
+      'assaultriflesbr', 'clubsbr', 'cyberimplantcombatbr', 'edgedweaponsbr', 'gunnerybr',
+      'heavyweaponsbr', 'laserweaponsbr', 'launchweaponsbr', 'pistolsbr', 'polearmsbr',
+      'projectileweaponsbr', 'riflesbr', 'shotgunsbr', 'submachinegunsbr', 'throwingweaponsbr',
+      'whipsbr'
+    ],
+    physical: [
+      'divingbr', 'runningbr', 'swimmingbr'
+    ],
+    technical: [
+      'computerbr', 'electronicsbr', 'engineeringbr', 'biotechbr'
+    ],
+    vehicle: [
+      'bikebr', 'carbr', 'airshipbr', 'boatbr', 'hovercraftbr', 'ltaaircraftbr', 'motorcyclebr',
+      'submarinebr', 'surfacecraftbr', 'vtolbr', 'wingsuitbr'
+    ]
+  }
+};
+
 // Define starting attribute packages by archetype
 const ARCHETYPE_PACKAGES = {
   Mage: {
     recommended: { intelligence: 5, willpower: 5, charisma: 3 },
-    skills: ['spellcasting', 'concentration', 'research', 'etiquette']
+    skills: ['sorcery', 'conjuring', 'aurareading', 'etiquette', 'computer']
   },
   StreetSamurai: {
     recommended: { strength: 5, body: 5, quickness: 4, willpower: 3 },
-    skills: ['pistol', 'rifle', 'closecombat', 'dodge']
+    skills: ['pistols', 'rifle', 'unarmedcombat', 'dodge', 'etiquette']
   },
   Shaman: {
     recommended: { charisma: 5, willpower: 5, intelligence: 3 },
-    skills: ['conjuring', 'spiritcontrol', 'survival', 'etiquette']
+    skills: ['conjuring', 'sorcery', 'aurareading', 'etiquette', 'survival']
   },
   Rigger: {
     recommended: { intelligence: 5, body: 3, quickness: 3, willpower: 4 },
-    skills: ['dronecontrol', 'automotive', 'electronics', 'perception']
+    skills: ['vehicle', 'computer', 'electronics', 'automotive']
   },
   Decker: {
     recommended: { intelligence: 6, willpower: 4, quickness: 3 },
-    skills: ['decking', 'computer', 'espcontrol', 'electronics']
+    skills: ['computer', 'electronics', 'decking', 'espcontrol']
   },
   PhysicalAdept: {
     recommended: { strength: 5, quickness: 5, body: 4, willpower: 4 },
-    skills: ['unarmed', 'closecombat', 'dodge', 'athletics']
+    skills: ['unarmedcombat', 'athletics', 'dodge', 'stealth']
   },
   Custom: {
     recommended: {},
@@ -233,7 +297,45 @@ const ARCHETYPE_PACKAGES = {
   }
 };
 
-// Attribute Point System (Shadowrun 3rd Edition)
+// Attribute Point System (Shadowrun 3rd Edition Official Priority Table)
+const PRIORITY_TABLE = {
+  A: {
+    name: 'Full Magician',
+    attributePoints: 30,
+    skillPoints: 50,
+    nuyen: 1000000,
+    racialRestrictions: ['Human', 'Elf', 'Dwarf', 'Ork', 'Troll']
+  },
+  B: {
+    name: 'Adept/Aspected Magician',
+    attributePoints: 27,
+    skillPoints: 40,
+    nuyen: 400000,
+    racialRestrictions: ['Human', 'Elf', 'Dwarf', 'Ork', 'Troll']
+  },
+  C: {
+    name: 'Elf/Troll',
+    attributePoints: 24,
+    skillPoints: 34,
+    nuyen: 90000,
+    racialRestrictions: ['Elf', 'Troll']
+  },
+  D: {
+    name: 'Dwarf/Ork',
+    attributePoints: 21,
+    skillPoints: 30,
+    nuyen: 20000,
+    racialRestrictions: ['Dwarf', 'Ork']
+  },
+  E: {
+    name: 'Human',
+    attributePoints: 18,
+    skillPoints: 27,
+    nuyen: 5000,
+    racialRestrictions: ['Human']
+  }
+};
+
 // Base attribute values for each race
 const RACE_BASE_VALUES = {
   Human: { body: 1, quickness: 1, strength: 1, charisma: 1, intelligence: 1, willpower: 1 },
@@ -255,6 +357,329 @@ ShadowrunCharacter.prototype.getAttributePointDistribution = function() {
     b_points: 5,  // 5 points for B attributes  
     c_points: 4,  // 4 points for C attributes
     d_points: 3   // 3 points for D attribute
+  };
+};
+
+ShadowrunCharacter.prototype.getPriorityOptions = function() {
+  return PRIORITY_TABLE;
+};
+
+ShadowrunCharacter.prototype.validatePriorityForRace = function(priority) {
+  if (!PRIORITY_TABLE[priority]) {
+    throw new Error(`Invalid priority level: ${priority}`);
+  }
+  
+  const priorityData = PRIORITY_TABLE[priority];
+  if (!priorityData.racialRestrictions.includes(this.race)) {
+    throw new Error(`${this.race} cannot be ${priority} priority. Valid races: ${priorityData.racialRestrictions.join(', ')}`);
+  }
+  
+  return priorityData;
+};
+
+ShadowrunCharacter.prototype.allocatePriorityPoints = function(priority, aAttrs, bAttrs, cAttrs, dAttr) {
+  const priorityData = this.validatePriorityForRace(priority);
+  
+  // Convert A/B/C/D allocation to total attribute points
+  const totalAttributePoints = aAttrs.length + bAttrs.length + cAttrs.length + (dAttr.length * 3);
+  
+  if (totalAttributePoints > priorityData.attributePoints) {
+    throw new Error(`Cannot allocate ${totalAttributePoints} points. Priority ${priority} only allows ${priorityData.attributePoints} points.`);
+  }
+  
+  // Set the priority
+  this.priority = priority;
+  this.priority_name = priorityData.name;
+  this.nuyen = priorityData.nuyen;
+  this.skill_points = priorityData.skillPoints;
+  this.skills = {};
+  
+  // Set attribute allocation
+  this.a_attributes = aAttrs;
+  this.b_attributes = bAttrs;
+  this.c_attributes = cAttrs;
+  this.d_attribute = dAttr;
+  
+  // Calculate final attribute values
+  const values = this.getAttributeValues();
+  Object.keys(values).forEach(attr => {
+    this[attr] = values[attr];
+  });
+  
+  return {
+    priority: priority,
+    priority_name: priorityData.name,
+    attribute_points_allocated: totalAttributePoints,
+    total_attribute_points: priorityData.attributePoints,
+    remaining_attribute_points: priorityData.attributePoints - totalAttributePoints,
+    nuyen: priorityData.nuyen,
+    skill_points: priorityData.skillPoints
+  };
+};
+
+ShadowrunCharacter.prototype.getAllSkills = function() {
+  return SHADOWRUN_SKILLS;
+};
+
+ShadowrunCharacter.prototype.allocateSkillPoints = function(skillName, rating, skillType = 'active') {
+  const allSkills = this.getAllSkills();
+  let found = false;
+  let category = null;
+  
+  // Check if skill exists in any category
+  for (const cat in allSkills) {
+    if (Array.isArray(allSkills[cat])) {
+      if (allSkills[cat].includes(skillName)) {
+        found = true;
+        category = cat;
+        break;
+      }
+    } else if (typeof allSkills[cat] === 'object') {
+      // Handle build/repair subcategories
+      for (const subCategory in allSkills[cat]) {
+        if (allSkills[cat][subCategory].includes(skillName)) {
+          found = true;
+          category = cat;
+          break;
+        }
+      }
+    }
+  }
+  
+  if (!found) {
+    throw new Error(`Skill '${skillName}' not found in Shadowrun skills list`);
+  }
+  
+  if (!this.skills) {
+    this.skills = {};
+  }
+  
+  if (rating < 0 || rating > 6) {
+    throw new Error('Skill rating must be between 0 and 6');
+  }
+  
+  const oldRating = this.skills[skillName] || 0;
+  this.skills[skillName] = rating;
+  
+  // Store skill type for character sheet display
+  if (!this.skillTypes) {
+    this.skillTypes = {};
+  }
+  this.skillTypes[skillName] = category;
+  
+  return {
+    skill: skillName,
+    oldRating: oldRating,
+    newRating: rating,
+    ratingChange: rating - oldRating,
+    category: category
+  };
+};
+
+ShadowrunCharacter.prototype.getKnowledgeSkills = function() {
+  if (!this.skills) return {};
+  const allSkills = this.getAllSkills();
+  const knowledgeSkills = {};
+  
+  allSkills.knowledge.forEach(skill => {
+    const rating = this.skills[skill] || 0;
+    if (rating > 0) {
+      knowledgeSkills[skill] = rating;
+    }
+  });
+  
+  return knowledgeSkills;
+};
+
+ShadowrunCharacter.prototype.getLanguageSkills = function() {
+  if (!this.skills) return {};
+  const allSkills = this.getAllSkills();
+  const languageSkills = {};
+  
+  allSkills.languages.forEach(skill => {
+    const rating = this.skills[skill] || 0;
+    if (rating > 0) {
+      languageSkills[skill] = rating;
+    }
+  });
+  
+  return languageSkills;
+};
+
+ShadowrunCharacter.prototype.getActiveSkills = function() {
+  if (!this.skills) return {};
+  const allSkills = this.getAllSkills();
+  const activeCategories = ['combat', 'magical', 'physical', 'social', 'technical', 'vehicle'];
+  const activeSkills = {};
+  
+  activeCategories.forEach(category => {
+    if (allSkills[category]) {
+      allSkills[category].forEach(skill => {
+        const rating = this.skills[skill] || 0;
+        if (rating > 0) {
+          activeSkills[skill] = rating;
+        }
+      });
+    }
+  });
+  
+  return activeSkills;
+};
+
+ShadowrunCharacter.prototype.getSkillsByCategory = function() {
+  const allSkills = this.getAllSkills();
+  const characterSkills = this.skills || {};
+  const categorized = {};
+  
+  // Active skills
+  categorized.active = {};
+  ['combat', 'magical', 'physical', 'social', 'technical', 'vehicle'].forEach(category => {
+    if (allSkills[category]) {
+      categorized.active[category] = {};
+      allSkills[category].forEach(skill => {
+        const rating = characterSkills[skill] || 0;
+        if (rating > 0) {
+          categorized.active[category][skill] = rating;
+        }
+      });
+    }
+  });
+  
+  // Knowledge skills
+  categorized.knowledge = {};
+  allSkills.knowledge.forEach(skill => {
+    const rating = characterSkills[skill] || 0;
+    if (rating > 0) {
+      categorized.knowledge[skill] = rating;
+    }
+  });
+  
+  // Language skills
+  categorized.languages = {};
+  allSkills.languages.forEach(skill => {
+    const rating = characterSkills[skill] || 0;
+    if (rating > 0) {
+      categorized.languages[skill] = rating;
+    }
+  });
+  
+  // Build/repair skills
+  categorized.buildrepair = {};
+  if (typeof allSkills.buildrepair === 'object') {
+    for (const subCategory in allSkills.buildrepair) {
+      categorized.buildrepair[subCategory] = {};
+      allSkills.buildrepair[subCategory].forEach(skill => {
+        const rating = characterSkills[skill] || 0;
+        if (rating > 0) {
+          categorized.buildrepair[subCategory][skill] = rating;
+        }
+      });
+    }
+  }
+  
+  return categorized;
+};
+
+ShadowrunCharacter.prototype.getSkillRating = function(skillName) {
+  if (!this.skills) {
+    return 0;
+  }
+  return this.skills[skillName] || 0;
+};
+
+ShadowrunCharacter.prototype.getSkillsByCategory = function() {
+  const allSkills = this.getAllSkills();
+  const characterSkills = this.skills || {};
+  const categorized = {};
+  
+  for (const category in allSkills) {
+    categorized[category] = {};
+    
+    if (Array.isArray(allSkills[category])) {
+      allSkills[category].forEach(skill => {
+        const rating = characterSkills[skill] || 0;
+        if (rating > 0) {
+          categorized[category][skill] = rating;
+        }
+      });
+    } else if (typeof allSkills[category] === 'object') {
+      // Handle build/repair subcategories
+      for (const subCategory in allSkills[category]) {
+        categorized[category][subCategory] = {};
+        allSkills[category][subCategory].forEach(skill => {
+          const rating = characterSkills[skill] || 0;
+          if (rating > 0) {
+            categorized[category][subCategory][skill] = rating;
+          }
+        });
+      }
+    }
+  }
+  
+  return categorized;
+};
+
+ShadowrunCharacter.prototype.getTotalSkillPointsUsed = function() {
+  if (!this.skills) {
+    return 0;
+  }
+  
+  let total = 0;
+  for (const skill in this.skills) {
+    const rating = this.skills[skill];
+    // Skill cost: 1-2: 1 point, 3-4: 2 points, 5-6: 3 points
+    if (rating <= 2) {
+      total += 1;
+    } else if (rating <= 4) {
+      total += 2;
+    } else {
+      total += 3;
+    }
+  }
+  
+  return total;
+};
+
+ShadowrunCharacter.prototype.canIncreaseSkill = function(skillName) {
+  const rating = this.getSkillRating(skillName);
+  return rating < 6;
+};
+
+ShadowrunCharacter.prototype.getSkillCost = function(skillName, currentRating) {
+  if (currentRating <= 2) return 1;
+  if (currentRating <= 4) return 2;
+  return 3;
+};
+
+ShadowrunCharacter.prototype.spendSkillPoints = function(skillName, amount = 1) {
+  const currentRating = this.getSkillRating(skillName);
+  const maxRating = 6;
+  
+  if (currentRating >= maxRating) {
+    throw new Error(`${skillName} is already at maximum rating (${maxRating})`);
+  }
+  
+  const newRating = Math.min(currentRating + amount, maxRating);
+  const cost = this.getSkillCost(skillName, currentRating) * amount;
+  const totalCost = cost * amount;
+  
+  const availablePoints = this.skill_points || 0;
+  const usedPoints = this.getTotalSkillPointsUsed();
+  const remainingPoints = availablePoints - usedPoints;
+  
+  if (totalPoints > remainingPoints) {
+    throw new Error(`Not enough skill points. Need ${totalCost} points, have ${remainingPoints} available`);
+  }
+  
+  // Update the skill
+  this.allocateSkillPoints(skillName, newRating);
+  
+  return {
+    skill: skillName,
+    oldRating: currentRating,
+    newRating: newRating,
+    pointsSpent: totalCost,
+    remainingSkillPoints: remainingPoints - totalCost
   };
 };
 
@@ -338,6 +763,31 @@ ShadowrunCharacter.prototype.setAttributeAllocation = function(aAttrs, bAttrs, c
     remaining_b: distribution.b_points - bAttrs.length,
     remaining_c: distribution.c_points - cAttrs.length,
     remaining_d: distribution.d_points - dAttr.length
+  };
+};
+
+ShadowrunCharacter.prototype.validatePriorityAllocation = function(priority, aAttrs, bAttrs, cAttrs, dAttr) {
+  const priorityData = this.validatePriorityForRace(priority);
+  
+  // Calculate total points based on A/B/C/D allocation
+  const totalPoints = aAttrs.length + bAttrs.length + cAttrs.length + (dAttr.length * 3);
+  
+  if (totalPoints > priorityData.attributePoints) {
+    throw new Error(`Priority ${priority} only allows ${priorityData.attributePoints} points, but you're trying to allocate ${totalPoints} points.`);
+  }
+  
+  // Check for duplicate attributes
+  const allAttrs = [...aAttrs, ...bAttrs, ...cAttrs, ...dAttr];
+  const duplicates = allAttrs.filter((attr, index) => allAttrs.indexOf(attr) !== index);
+  if (duplicates.length > 0) {
+    throw new Error(`Duplicate attributes found: ${duplicates.join(', ')}`);
+  }
+  
+  return {
+    valid: true,
+    totalPoints: totalPoints,
+    remainingPoints: priorityData.attributePoints - totalPoints,
+    priorityInfo: priorityData
   };
 };
 

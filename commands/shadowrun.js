@@ -38,11 +38,80 @@ module.exports = {
               { name: 'Decker', value: 'Decker' },
               { name: 'Physical Adept', value: 'PhysicalAdept' },
               { name: 'Custom (Full Customization)', value: 'Custom' }
-            )))
+            ))
+        .addStringOption(option =>
+          option.setName('priority')
+          .setDescription('Choose your priority level (A-E)')
+          .setRequired(true)
+          .addChoices(
+            { name: 'A: Full Magician (30 attr points, 50 skill points, 1,000,000¥)', value: 'A' },
+            { name: 'B: Adept/Aspected Magician (27 attr points, 40 skill points, 400,000¥)', value: 'B' },
+            { name: 'C: Elf/Troll (24 attr points, 34 skill points, 90,000¥)', value: 'C' },
+            { name: 'D: Dwarf/Ork (21 attr points, 30 skill points, 20,000¥)', value: 'D' },
+            { name: 'E: Human (18 attr points, 27 skill points, 5,000¥)', value: 'E' }
+          )))
     .addSubcommand(subcommand =>
       subcommand
         .setName('list-shadowrun')
         .setDescription('List all your Shadowrun characters'))
+    .addSubcommand(subcommand =>
+      subcommand
+        .setName('list-skills')
+        .setDescription('List all available Shadowrun skills by category'))
+    .addSubcommand(subcommand =>
+      subcommand
+        .setName('show-skills')
+        .setDescription('Show detailed skills breakdown by category')
+        .addStringOption(option =>
+          option.setName('name')
+            .setDescription('Character name')
+            .setRequired(true)))
+    .addSubcommand(subcommand =>
+      subcommand
+        .setName('combat-start')
+        .setDescription('Start a combat encounter')
+        .addStringOption(option =>
+          option.setName('name')
+            .setDescription('Character name')
+            .setRequired(true)))
+    .addSubcommand(subcommand =>
+      subcommand
+        .setName('combat-initiative')
+        .setDescription('Roll initiative for combat')
+        .addStringOption(option =>
+          option.setName('name')
+            .setDescription('Character name')
+            .setRequired(true)))
+    .addSubcommand(subcommand =>
+      subcommand
+        .setName('combat-attack')
+        .setDescription('Make an attack in combat')
+        .addStringOption(option =>
+          option.setName('name')
+            .setDescription('Character name')
+            .setRequired(true))
+        .addStringOption(option =>
+          option.setName('skill')
+            .setDescription('Attack skill to use')
+            .setRequired(true))
+        .addStringOption(option =>
+          option.setName('target')
+            .setDescription('Target name')
+            .setRequired(true))
+        .addIntegerOption(option =>
+          option.setName('accuracy')
+            .setDescription('Accuracy modifier')
+            .setRequired(false)
+            .setMinValue(-10)
+            .setMaxValue(10)))
+    .addSubcommand(subcommand =>
+      subcommand
+        .setName('combat-status')
+        .setDescription('Show combat status')
+        .addStringOption(option =>
+          option.setName('name')
+            .setDescription('Character name')
+            .setRequired(true)))
     .addSubcommand(subcommand =>
       subcommand
         .setName('view-shadowrun')
@@ -116,7 +185,25 @@ module.exports = {
         .addStringOption(option =>
           option.setName('d_attribute')
             .setDescription('D attribute (3 points to single attribute)')
-            .setRequired(true))),
+            .setRequired(true)))
+    .addSubcommand(subcommand =>
+      subcommand
+        .setName('allocate-skills')
+        .setDescription('Allocate skill points based on priority')
+        .addStringOption(option =>
+          option.setName('name')
+            .setDescription('Character name')
+            .setRequired(true))
+        .addStringOption(option =>
+          option.setName('skill')
+            .setDescription('Skill name to allocate points to')
+            .setRequired(true))
+        .addIntegerOption(option =>
+          option.setName('rating')
+            .setDescription('Skill rating (0-6)')
+            .setRequired(true)
+            .setMinValue(0)
+            .setMaxValue(6))),
 
   async execute(interaction, commands) {
     const subcommand = interaction.options.getSubcommand();
@@ -126,25 +213,32 @@ module.exports = {
       switch (subcommand) {
         case 'create-shadowrun':
           await createShadowrunCharacter(interaction, userId);
-          break;
         case 'list-shadowrun':
           await listShadowrunCharacters(interaction, userId);
-          break;
         case 'view-shadowrun':
           await viewShadowrunCharacter(interaction, userId);
-          break;
         case 'delete-shadowrun':
           await deleteShadowrunCharacter(interaction, userId);
-          break;
         case 'spend-karma':
           await spendKarma(interaction, userId);
-          break;
         case 'show-sheet':
           await showCharacterSheet(interaction, userId);
-          break;
         case 'allocate-attributes':
           await allocateAttributes(interaction, userId);
-          break;
+        case 'allocate-skills':
+          await allocateSkills(interaction, userId);
+        case 'list-skills':
+          await listSkills(interaction, userId);
+        case 'show-skills':
+          await showSkills(interaction, userId);
+        case 'combat-start':
+          await startCombat(interaction, userId);
+        case 'combat-initiative':
+          await rollInitiative(interaction, userId);
+        case 'combat-attack':
+          await makeAttack(interaction, userId);
+        case 'combat-status':
+          await showCombatStatus(interaction, userId);
       }
     } catch (error) {
       console.error('Error in Shadowrun character command:', error);
@@ -157,6 +251,7 @@ async function createShadowrunCharacter(interaction, userId) {
   const name = interaction.options.getString('name');
   const race = interaction.options.getString('race');
   const archetype = interaction.options.getString('archetype');
+  const priority = interaction.options.getString('priority');
 
   // If no archetype is provided, default to Custom
   const finalArchetype = archetype || 'Custom';
@@ -184,12 +279,13 @@ async function createShadowrunCharacter(interaction, userId) {
     name,
     race,
     archetype: finalArchetype,
+    priority: priority || 'E',
     karma: startingKarma[race] || 0,
     user_id: userId,
     guild_id: interaction.guild.id
   });
 
-  // Set up default attribute allocation based on archetype recommendations
+  // Set up default attribute allocation based on archetype recommendations and priority
   const archetypePackage = character.getArchetypePackage();
   const distribution = character.getAttributePointDistribution();
   
@@ -349,11 +445,16 @@ async function viewShadowrunCharacter(interaction, userId) {
     .setTitle(character.name)
     .setDescription(`${character.race} ${character.archetype || 'Custom Character'}`)
     .addFields(
+      { name: 'Priority', value: character.priority ? `${character.priority}: ${character.priority_name || 'Unknown'}` : 'Not assigned', inline: true },
       { name: 'Attributes', value: `Body: ${sheet.attributes.body.current}/${sheet.attributes.body.max} | Quickness: ${sheet.attributes.quickness.current}/${sheet.attributes.quickness.max} | Strength: ${sheet.attributes.strength.current}/${sheet.attributes.strength.max}`, inline: false },
       { name: 'Mental', value: `Charisma: ${sheet.attributes.charisma.current}/${sheet.attributes.charisma.max} | Intelligence: ${sheet.attributes.intelligence.current}/${sheet.attributes.intelligence.max} | Willpower: ${sheet.attributes.willpower.current}/${sheet.attributes.willpower.max}`, inline: false },
       { name: 'Derived', value: `Essence: ${sheet.derived.essence} | Magic: ${sheet.derived.magic} | Initiative: ${sheet.derived.initiative} (${sheet.derived.initiativePasses} passes)`, inline: false },
       { name: 'Monitors', value: `Physical: ${sheet.derived.physicalMonitor} | Stun: ${sheet.derived.stunMonitor}`, inline: false },
-      { name: 'Resources', value: `Karma: ${sheet.resources.karma} | Nuyen: ${sheet.resources.nuyen}`, inline: false },
+      { name: 'Resources', value: `Karma: ${sheet.resources.karma} | Nuyen: ${sheet.resources.nuyen}`, inline: true },
+      { name: 'Skill Points', value: `${character.getTotalSkillPointsUsed()}/${character.skill_points || 0}`, inline: true },
+      { name: 'Skills Summary', value: character.getTotalSkillPointsUsed() > 0 ? 
+        `Active: ${Object.keys(character.getActiveSkills()).length} | Knowledge: ${Object.keys(character.getKnowledgeSkills()).length} | Languages: ${Object.keys(character.getLanguageSkills()).length}` : 
+        'No skills allocated', inline: true },
       { name: archetypePackage.isCustom ? 'Custom Notes' : 'Archetype Skills', value: archetypePackage.isCustom ? 
         'Use karma to freely improve attributes and customize your character.' :
         archetypePackage.skills.join(', ')
@@ -453,6 +554,8 @@ async function showCharacterSheet(interaction, userId) {
       { name: 'Derived Stats', value: `Essence: ${sheet.derived.essence} | Magic: ${sheet.derived.magic} | Reaction: ${sheet.attributes.reaction.current}/${sheet.attributes.reaction.max}`, inline: true },
       { name: 'Combat', value: `Initiative: ${sheet.derived.initiative} (${sheet.derived.initiativePasses} passes) | Physical Monitor: ${sheet.derived.physicalMonitor} | Stun Monitor: ${sheet.derived.stunMonitor}`, inline: true },
       { name: 'Resources', value: `Karma: ${sheet.resources.karma} | Nuyen: ${sheet.resources.nuyen}`, inline: true },
+      { name: 'Skill Points', value: `${character.getTotalSkillPointsUsed()}/${character.skill_points || 0}`, inline: true },
+      { name: 'Skills Overview', value: character.getTotalSkillPointsUsed() > 0 ? 'See detailed skills with `/character view-shadowrun`' : 'No skills allocated yet', inline: true },
       { name: archetypePackage.isCustom ? 'Custom Notes' : 'Recommended Attributes', value: archetypePackage.isCustom ? 
         'Use karma to freely improve attributes and customize your character according to the Shadowrun 3rd Edition rulebook.' :
         archetypePackage.skills.join(', ')
@@ -510,3 +613,587 @@ async function allocateAttributes(interaction, userId) {
     await interaction.reply({ content: `Error allocating attributes: ${error.message}`, ephemeral: true });
   }
 }
+
+async function allocateSkills(interaction, userId) {
+  const characterName = interaction.options.getString('name');
+  const skillName = interaction.options.getString('skill');
+  const rating = interaction.options.getInteger('rating');
+
+  const character = await ShadowrunCharacter.findOne({
+    where: { name: characterName, user_id: userId }
+  });
+
+  if (!character) {
+    return await interaction.reply({ content: 'Shadowrun character not found!', ephemeral: true });
+  }
+
+  if (!character.skill_points) {
+    return await interaction.reply({ content: 'Character has no skill points allocated. Set priority first.', ephemeral: true });
+  }
+
+  try {
+    const result = character.allocateSkillPoints(skillName, rating);
+    
+    const embed = new EmbedBuilder()
+      .setColor(0x00ffff)
+      .setTitle('Skill Points Allocated')
+      .setDescription(`**${character.name}** skill rating updated successfully!`)
+      .addFields(
+        { name: 'Character', value: character.name, inline: true },
+        { name: 'Skill', value: skillName, inline: true },
+        { name: 'Rating', value: `${result.oldRating} → ${result.newRating}`, inline: true },
+        { name: 'Total Skill Points Used', value: character.getTotalSkillPointsUsed().toString(), inline: true },
+        { name: 'Available Skill Points', value: (character.skill_points - character.getTotalSkillPointsUsed()).toString(), inline: true }
+      )
+      .setTimestamp();
+
+    await interaction.reply({ embeds: [embed] });
+    
+    // Save the character with the new skill allocation
+    await character.save();
+    
+  } catch (error) {
+    await interaction.reply({ content: `Error allocating skill points: ${error.message}`, ephemeral: true });
+  }
+}
+
+async function listSkills(interaction, userId) {
+  // Create a temporary character to access skills
+  const tempCharacter = {
+    getAllSkills: function() {
+      return {
+        combat: [
+          'assaultrifles', 'clubs', 'cyberimplantcombat', 'edgedweapons', 'gunnery',
+          'heavyweapons', 'laserweapons', 'launchweapons', 'pistols', 'polearms',
+          'projectileweapons', 'rifles', 'shotguns', 'submachineguns', 'throwingweapons',
+          'unarmedcombat', 'underwatercombat', 'whips'
+        ],
+        magical: [
+          'aurareading', 'sorcery', 'conjuring'
+        ],
+        physical: [
+          'athletics', 'diving', 'stealth'
+        ],
+        social: [
+          'etiquette', 'instruction', 'interrogation', 'intimidation', 'leadership', 'negotiation'
+        ],
+        technical: [
+          'biotech', 'computer', 'demolitions', 'electronics'
+        ],
+        vehicle: [
+          'bike', 'car', 'fixedwingaircraft', 'hovercraft', 'ltaaircraft', 'motorboat',
+          'rotoraircraft', 'sailboat', 'ship', 'submarine', 'vectorthrustaircraft'
+        ]
+      };
+    }
+  };
+
+  const allSkills = tempCharacter.getAllSkills();
+  
+  const embed = new EmbedBuilder()
+    .setColor(0x00ff00)
+    .setTitle('Shadowrun 3rd Edition Skills')
+    .setDescription('All available skills organized by category');
+
+  // Add fields for each skill category
+  const categories = [
+    { name: 'Combat Skills', skills: allSkills.combat, emoji: '⚔️' },
+    { name: 'Magical Skills', skills: allSkills.magical, emoji: '🔮' },
+    { name: 'Physical Skills', skills: allSkills.physical, emoji: '💪' },
+    { name: 'Social Skills', skills: allSkills.social, emoji: '🗣️' },
+    { name: 'Technical Skills', skills: allSkills.technical, emoji: '🔧' },
+    { name: 'Vehicle Skills', skills: allSkills.vehicle, emoji: '🚗' }
+  ];
+
+  categories.forEach(category => {
+    const skillsList = category.skills.slice(0, 10).join(', ') + 
+                      (category.skills.length > 10 ? '...' : '');
+    embed.addFields({
+      name: `${category.emoji} ${category.name}`,
+      value: skillsList,
+      inline: false
+    });
+  });
+
+  embed.setTimestamp();
+  embed.addFields({
+    name: 'Usage',
+    value: 'Use `/character allocate-skills <character> <skill> <rating>` to allocate skill points (0-6)',
+    inline: false
+  });
+
+  await interaction.reply({ embeds: [embed] });
+}
+
+async function showSkills(interaction, userId) {
+  const characterName = interaction.options.getString('name');
+  const character = await ShadowrunCharacter.findOne({
+    where: { name: characterName, user_id: userId }
+  });
+
+  if (!character) {
+    return await interaction.reply({ content: 'Shadowrun character not found!', ephemeral: true });
+  }
+
+  const categorizedSkills = character.getSkillsByCategory();
+  const allSkills = character.getAllSkills();
+  
+  const embed = new EmbedBuilder()
+    .setColor(0x00ff00)
+    .setTitle(`${character.name} - Detailed Skills Breakdown`)
+    .setDescription(`${character.race} ${character.archetype || 'Custom Character'} - Priority: ${character.priority || 'Not assigned'}`);
+
+  // Active Skills
+  const activeFields = [];
+  Object.entries(categorizedSkills.active).forEach(([category, skills]) => {
+    if (Object.keys(skills).length > 0) {
+      const skillList = Object.entries(skills)
+        .map(([skill, rating]) => `${skill}(${rating})`)
+        .join(', ');
+      activeFields.push({ name: `${category.charAt(0).toUpperCase() + category.slice(1)} Skills`, value: skillList, inline: false });
+    }
+  });
+  
+  activeFields.forEach(field => embed.addFields(field));
+
+  // Knowledge Skills
+  if (Object.keys(categorizedSkills.knowledge).length > 0) {
+    const knowledgeList = Object.entries(categorizedSkills.knowledge)
+      .map(([skill, rating]) => `${skill}(${rating})`)
+      .join(', ');
+    embed.addFields({ 
+      name: 'Knowledge Skills', 
+      value: knowledgeList, 
+      inline: false 
+    });
+  } else {
+    embed.addFields({ 
+      name: 'Knowledge Skills', 
+      value: 'No knowledge skills allocated', 
+      inline: false 
+    });
+  }
+
+  // Language Skills
+  if (Object.keys(categorizedSkills.languages).length > 0) {
+    const languageList = Object.entries(categorizedSkills.languages)
+      .map(([skill, rating]) => `${skill}(${rating})`)
+      .join(', ');
+    embed.addFields({ 
+      name: 'Language Skills', 
+      value: languageList, 
+      inline: false 
+    });
+  } else {
+    embed.addFields({ 
+      name: 'Language Skills', 
+      value: 'No language skills allocated', 
+      inline: false 
+    });
+  }
+
+  // Build/Repair Skills
+  if (Object.keys(categorizedSkills.buildrepair).length > 0) {
+    const brFields = [];
+    Object.entries(categorizedSkills.buildrepair).forEach(([category, skills]) => {
+      if (Object.keys(skills).length > 0) {
+        const skillList = Object.entries(skills)
+          .map(([skill, rating]) => `${skill}(${rating})`)
+          .join(', ');
+        brFields.push({ name: `${category} Build/Repair`, value: skillList, inline: true });
+      }
+    });
+    brFields.forEach(field => embed.addFields(field));
+  }
+
+  // Resources and summary
+  embed.addFields(
+    { 
+      name: 'Skill Resources', 
+      value: `Points Used: ${character.getTotalSkillPointsUsed()}/${character.skill_points || 0}`, 
+      inline: true 
+    },
+    { 
+      name: 'Total Skills', 
+      value: `${Object.keys(character.skills || {}).length} skills learned`, 
+      inline: true 
+    }
+  );
+
+  embed.setTimestamp();
+  await interaction.reply({ embeds: [embed] });
+}
+
+async function startCombat(interaction, userId) {
+  const characterName = interaction.options.getString('name');
+  const character = await ShadowrunCharacter.findOne({
+    where: { name: characterName, user_id: userId }
+  });
+
+  if (!character) {
+    return await interaction.reply({ content: 'Shadowrun character not found!', ephemeral: true });
+  }
+
+  // Check if combat is already active
+  const existingCombat = await ShadowrunCombat.findOne({
+    where: { character_id: character.id, is_active: true }
+  });
+
+  if (existingCombat) {
+    return await interaction.reply({ content: 'Character is already in combat!', ephemeral: true });
+  }
+
+  // Create new combat session
+  const combat = await ShadowrunCombat.create({
+    session_id: Date.now().toString(),
+    character_id: character.id,
+    combat_pool: Math.floor((character.reaction + character.intelligence) / 2) + 2,
+    physical_monitor: (character.body * 2) + 8,
+    stun_monitor: (character.willpower * 2) + 8
+  });
+
+  const embed = new EmbedBuilder()
+    .setColor(0xff0000)
+    .setTitle(`${character.name} - Combat Started`)
+    .setDescription('Combat encounter initiated!')
+    .addFields(
+      { name: 'Character', value: character.name, inline: true },
+      { name: 'Combat Pool', value: combat.combat_pool.toString(), inline: true },
+      { name: 'Physical Monitor', value: `${combat.physical_damage}/${combat.physical_monitor}`, inline: true },
+      { name: 'Stun Monitor', value: `${combat.stun_damage}/${combat.stun_monitor}`, inline: true },
+      { name: 'Status', value: 'Ready for initiative roll', inline: true }
+    )
+    .setTimestamp();
+
+  await interaction.reply({ embeds: [embed] });
+}
+
+async function rollInitiative(interaction, userId) {
+  const characterName = interaction.options.getString('name');
+  const character = await ShadowrunCharacter.findOne({
+    where: { name: characterName, user_id: userId }
+  });
+
+  if (!character) {
+    return await interaction.reply({ content: 'Shadowrun character not found!', ephemeral: true });
+  }
+
+  const combat = await ShadowrunCombat.findOne({
+    where: { character_id: character.id, is_active: true }
+  });
+
+  if (!combat) {
+    return await interaction.reply({ content: 'No active combat session found. Start combat first!', ephemeral: true });
+  }
+
+  // Calculate initiative
+  const initiativeResult = combat.calculateInitiative();
+  combat.initiative = initiativeResult.total;
+  combat.initiative_passes = initiativeResult.passes;
+  
+  await combat.save();
+
+  const embed = new EmbedBuilder()
+    .setColor(0x00ff00)
+    .setTitle(`${character.name} - Initiative Roll`)
+    .setDescription('Combat initiative calculated!')
+    .addFields(
+      { name: 'Character', value: character.name, inline: true },
+      { name: 'Reaction', value: character.reaction.toString(), inline: true },
+      { name: 'Intuition', value: character.intuition.toString(), inline: true },
+      { name: 'Initiative Dice', value: initiativeResult.dice.toString(), inline: true },
+      { name: 'Total Initiative', value: initiativeResult.total.toString(), inline: true },
+      { name: 'Initiative Passes', value: initiativeResult.passes.toString(), inline: true }
+    )
+    .setTimestamp();
+
+  await interaction.reply({ embeds: [embed] });
+}
+
+async function makeAttack(interaction, userId) {
+  const characterName = interaction.options.getString('name');
+  const skillName = interaction.options.getString('skill');
+  const targetName = interaction.options.getString('target');
+  const accuracy = interaction.options.getInteger('accuracy') || 0;
+
+  const character = await ShadowrunCharacter.findOne({
+    where: { name: characterName, user_id: userId }
+  });
+
+  if (!character) {
+    return await interaction.reply({ content: 'Shadowrun character not found!', ephemeral: true });
+  }
+
+  const combat = await ShadowrunCombat.findOne({
+    where: { character_id: character.id, is_active: true }
+  });
+
+  if (!combat) {
+    return await interaction.reply({ content: 'No active combat session found. Start combat first!', ephemeral: true });
+  }
+
+  // Simulate target (for now)
+  const target = {
+    reaction: 3,
+    intuition: 3
+  };
+
+  // Use the combat dice system
+  const ShadowrunCombatDice = require('../utils/ShadowrunCombatDice');
+  const attackResult = ShadowrunCombatDice.rollAttackTest(character, skillName, accuracy, target.reaction + target.intelligence);
+
+  // Log the action
+  combat.addActionToLog({
+    type: 'attack',
+    skill: skillName,
+    target: targetName,
+    accuracy: accuracy,
+    result: attackResult
+  });
+
+  // Update combat pool if used
+  if (attackResult.defense.successes > 0) {
+    combat.combat_pool_defense += attackResult.defense.successes;
+    combat.combat_pool_remaining = combat.combat_pool - combat.combat_pool_offense - combat.combat_pool_defense;
+  }
+
+  await combat.save();
+
+  const embed = new EmbedBuilder()
+    .setColor(0xff6600)
+    .setTitle(`${character.name} - Attack Roll`)
+    .setDescription(`${character.name} attacks ${targetName} with ${skillName}!`)
+    .addFields(
+      { name: 'Character', value: character.name, inline: true },
+      { name: 'Skill', value: skillName, inline: true },
+      { name: 'Target', value: targetName, inline: true },
+      { name: 'Attack Pool', value: attackResult.attack.pool.toString(), inline: true },
+      { name: 'Attack Successes', value: attackResult.attack.successes.toString(), inline: true },
+      { name: 'Defense Successes', value: attackResult.defense.successes.toString(), inline: true },
+      { name: 'Net Successes', value: attackResult.netSuccesses.toString(), inline: true },
+      { name: 'Hit Result', value: attackResult.hit ? 'HIT!' : 'Miss', inline: true },
+      { name: 'Combat Pool Remaining', value: combat.combat_pool_remaining.toString(), inline: true }
+    )
+    .setTimestamp();
+
+  await interaction.reply({ embeds: [embed] });
+}
+
+async function showCombatStatus(interaction, userId) {
+  const characterName = interaction.options.getString('name');
+  const character = await ShadowrunCharacter.findOne({
+    where: { name: characterName, user_id: userId }
+  });
+
+  if (!character) {
+    return await interaction.reply({ content: 'Shadowrun character not found!', ephemeral: true });
+  }
+
+  const combat = await ShadowrunCombat.findOne({
+    where: { character_id: character.id, is_active: true }
+  });
+
+  if (!combat) {
+    return await interaction.reply({ content: 'No active combat session found.', ephemeral: true });
+  }
+
+  const status = combat.getCombatStatus();
+
+  const embed = new EmbedBuilder()
+    .setColor(0x0000ff)
+    .setTitle(`${character.name} - Combat Status`)
+    .setDescription('Current combat state')
+    .addFields(
+      { name: 'Initiative', value: status.initiative.toString(), inline: true },
+      { name: 'Initiative Passes', value: status.passes.toString(), inline: true },
+      { name: 'Combat Pool', value: status.combat_pool.total.toString(), inline: true },
+      { name: 'Offensive Pool', value: status.combat_pool.offense.toString(), inline: true },
+      { name: 'Defensive Pool', value: status.combat_pool.defense.toString(), inline: true },
+      { name: 'Pool Remaining', value: status.combat_pool.remaining.toString(), inline: true },
+      { name: 'Physical Damage', value: `${status.condition_monitor.physical.current}/${status.condition_monitor.physical.max}`, inline: true },
+      { name: 'Stun Damage', value: `${status.condition_monitor.stun.current}/${status.condition_monitor.stun.max}`, inline: true },
+      { name: 'Status', value: status.is_active ? 'Active' : 'Inactive', inline: true },
+      { name: 'Phase', value: status.phase, inline: true }
+    )
+    .setTimestamp();
+
+  await interaction.reply({ embeds: [embed] });
+}
+async function applyDamage(interaction, userId) {
+  const characterName = interaction.options.getString('name');
+  const damageAmount = interaction.options.getInteger('damage');
+  const damageType = interaction.options.getString('type');
+
+  const character = await ShadowrunCharacter.findOne({
+    where: { name: characterName, user_id: userId }
+  });
+
+  if (!character) {
+    return await interaction.reply({ content: 'Shadowrun character not found!', ephemeral: true });
+  }
+
+  const combat = await ShadowrunCombat.findOne({
+    where: { character_id: character.id, is_active: true }
+  });
+
+  if (!combat) {
+    return await interaction.reply({ content: 'No active combat session found. Start combat first!', ephemeral: true });
+  }
+
+  const damageResult = combat.sufferDamage(damageAmount, damageType);
+
+  const embed = new EmbedBuilder()
+    .setColor(0xff0000)
+    .setTitle(`${character.name} - Damage Applied`)
+    .setDescription(`${damageAmount}  damage applied!`)
+    .addFields(
+      { name: 'Character', value: character.name, inline: true },
+      { name: 'Damage Type', value: damageType, inline: true },
+      { name: 'Damage Amount', value: damageAmount.toString(), inline: true },
+      { name: 'Result', value: damageResult.result, inline: true },
+      { name: 'Total Damage', value: damageResult.total_damage.toString(), inline: true },
+      { name: 'Status', value: combat.is_active ? 'Active' : 'Inactive', inline: true }
+    )
+    .setTimestamp();
+
+  await interaction.reply({ embeds: [embed] });
+}
+
+async function healDamage(interaction, userId) {
+  const characterName = interaction.options.getString('name');
+  const healAmount = interaction.options.getInteger('damage');
+  const damageType = interaction.options.getString('type');
+
+  const character = await ShadowrunCharacter.findOne({
+    where: { name: characterName, user_id: userId }
+  });
+
+  if (!character) {
+    return await interaction.reply({ content: 'Shadowrun character not found!', ephemeral: true });
+  }
+
+  const combat = await ShadowrunCombat.findOne({
+    where: { character_id: character.id, is_active: true }
+  });
+
+  if (!combat) {
+    return await interaction.reply({ content: 'No active combat session found. Start combat first!', ephemeral: true });
+  }
+
+  const healResult = combat.healDamage(healAmount, damageType);
+
+  const embed = new EmbedBuilder()
+    .setColor(0x00ff00)
+    .setTitle(`${character.name} - Healing Applied`)
+    .setDescription(`${healAmount}  damage healed!`)
+    .addFields(
+      { name: 'Character', value: character.name, inline: true },
+      { name: 'Heal Amount', value: healAmount.toString(), inline: true },
+      { name: 'Damage Type', value: damageType, inline: true },
+      { name: 'Remaining Damage', value: healResult.remaining_damage.toString(), inline: true },
+      { name: 'Status', value: combat.is_active ? 'Active' : 'Inactive', inline: true }
+    )
+    .setTimestamp();
+
+  await interaction.reply({ embeds: [embed] });
+}
+
+async function manageCombatPool(interaction, userId) {
+  const characterName = interaction.options.getString('name');
+  const action = interaction.options.getString('action');
+  const offense = interaction.options.getInteger('offense') || 0;
+  const defense = interaction.options.getInteger('defense') || 0;
+
+  const character = await ShadowrunCharacter.findOne({
+    where: { name: characterName, user_id: userId }
+  });
+
+  if (!character) {
+    return await interaction.reply({ content: 'Shadowrun character not found!', ephemeral: true });
+  }
+
+  const combat = await ShadowrunCombat.findOne({
+    where: { character_id: character.id, is_active: true }
+  });
+
+  if (!combat) {
+    return await interaction.reply({ content: 'No active combat session found. Start combat first!', ephemeral: true });
+  }
+
+  if (action === 'allocate') {
+    try {
+      const allocation = combat.allocateCombatPool(offense, defense);
+      
+      const embed = new EmbedBuilder()
+        .setColor(0x0066ff)
+        .setTitle(`${character.name} - Combat Pool Allocated`)
+        .setDescription('Combat pool points allocated successfully!')
+        .addFields(
+          { name: 'Character', value: character.name, inline: true },
+          { name: 'Offense Points', value: allocation.offense.toString(), inline: true },
+          { name: 'Defense Points', value: allocation.defense.toString(), inline: true },
+          { name: 'Remaining Points', value: allocation.remaining.toString(), inline: true }
+        )
+        .setTimestamp();
+
+      await interaction.reply({ embeds: [embed] });
+    } catch (error) {
+      await interaction.reply({ content: error.message, ephemeral: true });
+    }
+  } else if (action === 'reset') {
+    const reset = combat.resetCombatPool();
+    
+    const embed = new EmbedBuilder()
+      .setColor(0x00ff00)
+      .setTitle(`${character.name} - Combat Pool Reset`)
+      .setDescription('Combat pool points reset successfully!')
+      .addFields(
+        { name: 'Character', value: character.name, inline: true },
+        { name: 'Total Pool', value: reset.total.toString(), inline: true },
+        { name: 'Remaining Points', value: reset.remaining.toString(), inline: true }
+      )
+      .setTimestamp();
+
+    await interaction.reply({ embeds: [embed] });
+  }
+}
+
+async function endCombat(interaction, userId) {
+  const characterName = interaction.options.getString('name');
+
+  const character = await ShadowrunCharacter.findOne({
+    where: { name: characterName, user_id: userId }
+  });
+
+  if (!character) {
+    return await interaction.reply({ content: 'Shadowrun character not found!', ephemeral: true });
+  }
+
+  const combat = await ShadowrunCombat.findOne({
+    where: { character_id: character.id, is_active: true }
+  });
+
+  if (!combat) {
+    return await interaction.reply({ content: 'No active combat session found.', ephemeral: true });
+  }
+
+  const endResult = combat.endCombat();
+  const status = combat.getCombatStatus();
+
+  const embed = new EmbedBuilder()
+    .setColor(0x660000)
+    .setTitle(`${character.name} - Combat Ended`)
+    .setDescription('Combat session concluded!')
+    .addFields(
+      { name: 'Character', value: character.name, inline: true },
+      { name: 'Final Status', value: endResult.status, inline: true },
+      { name: 'Physical Damage', value: `${status.condition_monitor.physical.current}/${status.condition_monitor.physical.max}`, inline: true },
+      { name: 'Stun Damage', value: `${status.condition_monitor.stun.current}/${status.condition_monitor.stun.max}`, inline: true },
+      { name: 'Final Initiative', value: status.initiative.toString(), inline: true },
+      { name: 'Combat Actions', value: combat.combat_log ? combat.combat_log.length.toString() : '0', inline: true }
+    )
+    .setTimestamp();
+
+  await interaction.reply({ embeds: [embed] });
+}
+
