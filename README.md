@@ -2,7 +2,7 @@
 
 A comprehensive Discord roleplay bot with character management, dice rolling, scene organization, and Game Master tools.
 
-**Version 0.2.0.0** - Shadowrun 3rd Edition RPG System (Phases 1-3 Complete) 🎯✨🔮
+**Version 0.2.0.0** - Shadowrun 3rd Edition RPG System (Phases 1-4 Complete) 🎯✨🔮💻
 
 ## Features
 
@@ -42,6 +42,10 @@ A comprehensive Discord roleplay bot with character management, dice rolling, sc
 - **Magic System**: Complete spellcasting mechanics with drain calculation and spell categories (Phase 4)
 - **Spirit Summoning**: Hermetic and shamanic spirit binding with spirit management and services
 - **Astral Projection**: Astral plane mechanics with tracking, perception, and astral combat
+- **Matrix System**: Complete cyberdeck mechanics with MPCP ratings, persona programs, utility programs, and ICE countermeasures (Phase 4)
+- **Matrix Combat**: Full matrix combat with initiative passes, attack/defense tests, security tallies, and IC activation
+- **Cyberdecks**: Complete deck system from microdecks to elite decks with MPCP-3 through MPCP-12 ratings
+- **ICE Countermeasures**: Probe, Killer, and Black IC with activation thresholds and alert levels
 
 ## Installation
 
@@ -165,6 +169,20 @@ A comprehensive Discord roleplay bot with character management, dice rolling, sc
 - `/magic astral-perception` - Perform astral perception tests
 - `/magic astral-tracking` - Track astral signatures
 - `/magic astral-combat` - Engage in astral combat
+
+### Matrix Commands (Phase 4)
+- `/matrix deck-info` - View cyberdeck specifications and ratings
+- `/matrix load-deck` - Load a cyberdeck (micro, standard, high, elite)
+- `/matrix list-programs` - View available utility and combat programs
+- `/matrix install-program` - Install programs on your cyberdeck
+- `/matrix switch-vr` - Switch between AR and VR modes
+- `/matrix initiative` - Calculate matrix initiative with passes
+- `/matrix attack` - Perform matrix attack tests
+- `/matrix defend` - Perform matrix defense tests
+- `/matrix probe` - Probe systems for security information
+- `/matrix status` - View current matrix combat status
+- `/matrix ic-list` - List active ICE countermeasures
+- `/matrix security-tally` - View current security tally and alert levels
 
 ### Combat Commands
 - `/combat-start` - Initiate combat session
