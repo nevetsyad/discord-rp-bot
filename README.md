@@ -2,7 +2,7 @@
 
 A comprehensive Discord roleplay bot with character management, dice rolling, scene organization, and Game Master tools.
 
-**Version 0.1.4.0** - Shadowrun 3rd Edition Phase 3 Combat System Complete! ⚔️
+**Version 0.1.5.0** - Shadowrun 3rd Edition Phase 4 Magic System Complete! ✨🔮
 
 ## Features
 
@@ -39,6 +39,9 @@ A comprehensive Discord roleplay bot with character management, dice rolling, sc
 - **Combat System**: Complete combat with initiative passes, combat pool allocation, stun/physical damage
 - **Specialized Rolls**: Spellcasting, conjuring, decking, and combat maneuvers
 - **Character Sheets**: Detailed character sheet generation with derived stats
+- **Magic System**: Complete spellcasting mechanics with drain calculation and spell categories (Phase 4)
+- **Spirit Summoning**: Hermetic and shamanic spirit binding with spirit management and services
+- **Astral Projection**: Astral plane mechanics with tracking, perception, and astral combat
 
 ## Installation
 
@@ -152,6 +155,16 @@ A comprehensive Discord roleplay bot with character management, dice rolling, sc
 - `/shadowrun-dice conjuring` - Conjuring rolls
 - `/shadowrun-dice decking` - Decking rolls
 - `/shadowrun-dice initiative` - Calculate initiative
+
+### Magic Commands (Phase 4)
+- `/magic summon` - Summon spirits (Hermetic/ Shamanic traditions)
+- `/magic bind` - Bind spirits to services
+- `/magic list-spirits` - List available spirits by tradition
+- `/magic spirit-powers` - View spirit abilities and powers
+- `/magic astral-project` - Project into astral plane
+- `/magic astral-perception` - Perform astral perception tests
+- `/magic astral-tracking` - Track astral signatures
+- `/magic astral-combat` - Engage in astral combat
 
 ### Combat Commands
 - `/combat-start` - Initiate combat session

@@ -6,6 +6,45 @@ class ShadowrunDice {
     this.diceFaces = ['⚀', '⚁', '⚂', '⚃', '⚄', '⚅'];
   }
 
+  // Simple dice roll method for basic testing
+  rollDice(pool, targetNumber = 5) {
+    if (pool <= 0) {
+      return { total: 0, successes: 0, diceRolled: 0, glitch: false, criticalGlitch: false };
+    }
+
+    const dice = [];
+    let successes = 0;
+    let ones = 0;
+
+    for (let i = 0; i < pool; i++) {
+      const roll = Math.floor(Math.random() * 6) + 1;
+      dice.push(roll);
+      
+      if (roll >= targetNumber) {
+        successes++;
+      }
+      
+      if (roll === 1) {
+        ones++;
+      }
+    }
+
+    // Determine glitch
+    const glitch = ones >= Math.ceil(pool / 2) && successes === 0;
+    const criticalGlitch = ones >= pool / 2 && successes === 0;
+
+    return {
+      total: successes,
+      successes: successes,
+      diceRolled: pool,
+      dice: dice,
+      ones: ones,
+      targetNumber: targetNumber,
+      glitch: glitch,
+      criticalGlitch: criticalGlitch
+    };
+  }
+
   // Basic Shadowrun dice roll - count successes (5+)
   rollDicePool(pool, targetNumber = 5) {
     if (pool <= 0) {

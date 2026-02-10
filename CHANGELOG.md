@@ -174,6 +174,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Initial setup and configuration issues
 - Basic Discord integration problems
+## [0.1.5.0] - 2026-02-09
+
+### Added
+- Complete Phase 4: Magic System Implementation
+- ShadowrunMagic model with spellcasting mechanics and drain calculation
+- ShadowrunSpirits utility with complete spirit summoning/binding system
+- ShadowrunAstral utility with astral projection mechanics
+- Magic Discord command interface with full spell and spirit management
+- Comprehensive spell categories and drain system following Shadowrun 3rd Edition rules
+- Spirit summoning for both Hermetic (Elemental Spirits) and Shamanic (Nature Spirits) traditions
+- Astral plane mechanics with tracking, perception, combat, and projection systems
+- Complete database integration with new magic-related tables and relationships
+- 100% test coverage across 21 comprehensive test categories
+- All Phase 4 features fully functional and tested
+
+### Changed
+- Updated version to 0.1.5.0 to reflect Phase 4 completion
+- Updated README.md to reflect completed Magic System implementation
+- Fixed spirit name format consistency (AIR_ELEMENTAL vs Air_Elemental)
+- Added success property to spirit summoning results
+- Enhanced astral tracking with proper target number calculation
+- Optimized drain calculation logic with proper service counting
+- Improved error handling and validation for all magic system components
+
 ## [0.1.4.0] - 2026-02-08
 
 ### Added

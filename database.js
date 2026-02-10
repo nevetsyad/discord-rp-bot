@@ -27,6 +27,7 @@ const DiceRoll = require('./models/DiceRoll')(sequelize);
 const CharacterScene = require('./models/CharacterScene')(sequelize);
 const ShadowrunCharacter = require('./models/ShadowrunCharacter')(sequelize);
 const ShadowrunCombat = require('./models/ShadowrunCombat')(sequelize);
+const ShadowrunMagic = require('./models/ShadowrunMagic')(sequelize);
 const { Combat, CombatParticipant, CombatAction } = require('./models/Combat')(sequelize);
 
 // Define relationships
@@ -73,6 +74,7 @@ const db = {
   CharacterScene,
   ShadowrunCharacter,
   ShadowrunCombat,
+  ShadowrunMagic,
   Combat,
   CombatParticipant,
   CombatAction
