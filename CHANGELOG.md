@@ -174,6 +174,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Initial setup and configuration issues
 - Basic Discord integration problems
+## [0.2.0.0] - 2026-02-09
+
+### Added
+- **MAJOR MILESTONE**: Complete Shadowrun 3rd Edition System Implementation!
+- **Phase 1**: Character creation with priority system (A-E), 5 meta-human races, 6 archetypes
+- **Phase 3**: Combat system with initiative passes, combat pool, damage/healing, condition monitors
+- **Phase 4**: Magic system with spellcasting, spirit summoning, astral projection mechanics
+- Complete Discord command interface for all Shadowrun features
+- Comprehensive database integration with proper relationships and constraints
+- 100% test coverage across all system components
+- Full character sheet generation and management
+
+### Changed
+- **Version bumped to 0.2.0.0** to reflect major milestone completion
+- Updated README.md to showcase complete Shadowrun 3rd Edition system
+- Enhanced documentation for all major system components
+- Optimized performance and error handling across all modules
+
 ## [0.1.5.0] - 2026-02-09
 
 ### Added
