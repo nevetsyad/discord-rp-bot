@@ -55,6 +55,14 @@ A comprehensive Discord roleplay bot with character management, dice rolling, sc
 - Discord Bot Token
 - Discord Application Client ID
 
+### Testing & Validation
+The bot includes comprehensive testing systems:
+- ✅ **Bug Check Script**: Validates all core files and configurations
+- ✅ **Phase 1 Test**: Complete dice system validation with 6/6 tests passing
+- ✅ **Integration Test**: Cross-phase system validation
+- ✅ **Syntax Validation**: All JavaScript files pass syntax checks
+- ✅ **Documentation**: Complete installation guides and command references
+
 ### Setup
 
 1. **Clone the repository**
