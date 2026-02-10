@@ -2,7 +2,7 @@
 
 A comprehensive Discord roleplay bot with character management, dice rolling, scene organization, and Game Master tools.
 
-**Version 1.0.0** - COMPLETE Shadowrun 3rd Edition RPG System! 🎯✨🔮🚀
+**Version 0.2.0.0** - Shadowrun 3rd Edition RPG System (Phases 1-3 Complete) 🎯✨🔮
 
 ## Features
 

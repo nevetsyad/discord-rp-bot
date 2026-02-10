@@ -29,8 +29,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added Shadowrun-specific keywords to package.json
 - Updated README.md to reflect Shadowrun 3rd Edition capabilities
 
-## [1.0.0] - 2026-02-10
-### 🎉 MAJOR MILESTONE: Complete Shadowrun 3rd Edition RPG System!
+## [0.2.0.0] - 2026-02-10
+### Added
+- **Phase 1-3 Complete**: Character creation, combat, and magic systems
+- **Basic matrix dice rolling**: Simple decking roll command (foundation for Phase 4)
+- **Complete Discord Command Interface**: All implemented commands fully functional
+- **Comprehensive Database Integration**: MySQL with relationships for existing systems
+- **High Test Coverage**: Extensive testing across implemented components
+- **Professional Documentation**: Complete installation guides and command references
 ### Added
 - **COMPLETE SYSTEM**: All phases implemented and fully functional
 - **Phase 1**: Character creation with priority system (A-E), 5 meta-human races, 6 archetypes, karma advancement
