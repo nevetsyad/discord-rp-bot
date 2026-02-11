@@ -1,6 +1,6 @@
 // Shadowrun 3rd Edition Combat System
 const { DataTypes } = require('sequelize');
-const sequelize = require('../database');
+const sequelize = require('../config/database');
 
 const ShadowrunCombat = sequelize.define('ShadowrunCombat', {
   id: {

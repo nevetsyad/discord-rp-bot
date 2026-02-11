@@ -1,6 +1,6 @@
 // Shadowrun Magic System Database Model
 const { DataTypes } = require('sequelize');
-const sequelize = require('./database');
+const sequelize = require('../config/database');
 
 const ShadowrunMagic = sequelize.define('ShadowrunMagic', {
   id: {
@@ -134,7 +134,7 @@ const ShadowrunMagic = sequelize.define('ShadowrunMagic', {
 });
 
 // Define relationships
-ShadowrunMagic.belongsTo(require('./models/ShadowrunCharacter'), {
+ShadowrunMagic.belongsTo(require('./ShadowrunCharacter'), {
   foreignKey: 'character_id',
   as: 'character'
 });

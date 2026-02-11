@@ -2,6 +2,7 @@ const { SlashCommandBuilder } = require('discord.js');
 const { ShadowrunCharacter } = require('../models');
 const { ShadowrunDice } = require('../utils/ShadowrunDice');
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } = require('discord.js');
+const EnhancedEmbeds = require('./enhanced-embeds');
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -539,31 +540,17 @@ async function showCharacterSheet(interaction, userId) {
     return await interaction.reply({ content: 'Shadowrun character not found!', ephemeral: true });
   }
 
-  const sheet = character.getCharacterSheet();
-
-  const archetypePackage = character.getArchetypePackage();
+  const enhancedEmbeds = new EnhancedEmbeds();
+  const embeds = enhancedEmbeds.createCharacterSheet(character);
   
-  const embed = new EmbedBuilder()
-    .setColor(0x0080ff)
-    .setTitle(`${sheet.name} - Shadowrun Character Sheet`)
-    .setDescription(`${sheet.race} ${sheet.archetype || 'Custom Character'}`)
-    .addFields(
-      { name: 'Attributes', value: `Body: ${sheet.attributes.body.current}/${sheet.attributes.body.max} | Quickness: ${sheet.attributes.quickness.current}/${sheet.attributes.quickness.max} | Strength: ${sheet.attributes.strength.current}/${sheet.attributes.strength.max}`, inline: true },
-      { name: 'Mental', value: `Charisma: ${sheet.attributes.charisma.current}/${sheet.attributes.charisma.max} | Intelligence: ${sheet.attributes.intelligence.current}/${sheet.attributes.intelligence.max} | Willpower: ${sheet.attributes.willpower.current}/${sheet.attributes.willpower.max}`, inline: true },
-      { name: 'Attribute Allocation', value: `A: ${sheet.attributeAllocation.a_attributes.join(', ') || 'None'} | B: ${sheet.attributeAllocation.b_attributes.join(', ') || 'None'} | C: ${sheet.attributeAllocation.c_attributes.join(', ') || 'None'} | D: ${sheet.attributeAllocation.d_attribute[0] || 'None'}`, inline: true },
-      { name: 'Derived Stats', value: `Essence: ${sheet.derived.essence} | Magic: ${sheet.derived.magic} | Reaction: ${sheet.attributes.reaction.current}/${sheet.attributes.reaction.max}`, inline: true },
-      { name: 'Combat', value: `Initiative: ${sheet.derived.initiative} (${sheet.derived.initiativePasses} passes) | Physical Monitor: ${sheet.derived.physicalMonitor} | Stun Monitor: ${sheet.derived.stunMonitor}`, inline: true },
-      { name: 'Resources', value: `Karma: ${sheet.resources.karma} | Nuyen: ${sheet.resources.nuyen}`, inline: true },
-      { name: 'Skill Points', value: `${character.getTotalSkillPointsUsed()}/${character.skill_points || 0}`, inline: true },
-      { name: 'Skills Overview', value: character.getTotalSkillPointsUsed() > 0 ? 'See detailed skills with `/character view-shadowrun`' : 'No skills allocated yet', inline: true },
-      { name: archetypePackage.isCustom ? 'Custom Notes' : 'Recommended Attributes', value: archetypePackage.isCustom ? 
-        'Use karma to freely improve attributes and customize your character according to the Shadowrun 3rd Edition rulebook.' :
-        archetypePackage.skills.join(', ')
-      , inline: true }
-    )
-    .setTimestamp();
-
-  await interaction.reply({ embeds: [embed] });
+  // Add character action buttons
+  const actionButtons = enhancedEmbeds.createCharacterActionButtons(character.id);
+  
+  await interaction.reply({ 
+    embeds: embeds, 
+    components: [actionButtons],
+    ephemeral: false 
+  });
 }
 
 async function allocateAttributes(interaction, userId) {

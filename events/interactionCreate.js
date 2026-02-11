@@ -3,9 +3,11 @@ const { User, ShadowrunCharacter } = require('../database');
 
 // Import magic commands
 const MagicCommands = require('../commands/magic');
+const EnhancedErrorHandling = require('../commands/enhanced-error-handling');
 
-// Create magic commands instance
+// Create instances
 const magicCommands = new MagicCommands();
+const errorHandling = new EnhancedErrorHandling();
 
 module.exports = {
   name: Events.InteractionCreate,
@@ -81,19 +83,8 @@ module.exports = {
       // Execute regular commands
       await command.execute(interaction, commands);
     } catch (error) {
-      console.error(`Error executing ${interaction.commandName}:`, error);
-      
-      if (interaction.replied || interaction.deferred) {
-        await interaction.followUp({ 
-          content: 'There was an error while executing this command!', 
-          ephemeral: true 
-        });
-      } else {
-        await interaction.reply({ 
-          content: 'There was an error while executing this command!', 
-          ephemeral: true 
-        });
-      }
+      // Use enhanced error handling
+      await errorHandling.handleCommandError(interaction, error, interaction.commandName);
     }
   }
 };

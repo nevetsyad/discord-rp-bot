@@ -1,6 +1,6 @@
 // Shadowrun 3rd Edition Character Model
 const { DataTypes } = require('sequelize');
-const sequelize = require('../database');
+const sequelize = require('../config/database');
 
 const ShadowrunCharacter = sequelize.define('ShadowrunCharacter', {
   id: {
