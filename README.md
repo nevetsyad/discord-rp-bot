@@ -2,7 +2,7 @@
 
 A comprehensive Discord roleplay bot with character management, dice rolling, scene organization, and Game Master tools.
 
-**Version 0.4.0.0** - Shadowrun 3rd Edition RPG System (Phases 1-5 Complete) 🎯✨🔮💻🤖
+**Version 0.8.0** - Shadowrun 3rd Edition RPG System (Phase 5b in Progress) 🎯✨🔮💻🤖
 
 ## Features
 
@@ -46,7 +46,9 @@ A comprehensive Discord roleplay bot with character management, dice rolling, sc
 - **Matrix Combat**: Full matrix combat with initiative passes, attack/defense tests, security tallies, and IC activation
 - **Cyberdecks**: Complete deck system from microdecks to elite decks with MPCP-3 through MPCP-12 ratings
 - **ICE Countermeasures**: Probe, Killer, and Black IC with activation thresholds and alert levels
-- **Cyberware System**: Complete cybernetic and bioware management with essence tracking, installation, and bonuses (Phase 5)
+- **Cyberware System**: Complete cybernetic and bioware management with essence tracking, installation, and bonuses (Phase 5 ✅)
+- **Vehicles System**: Complete vehicle/drone mechanics with rigging, combat, and modification systems (Phase 5 ✅)
+- **Current Phase 5b**: Edges & Flaws System (In Progress), Advanced Skills, Lifestyle & Survival, Advanced Economy
 - **Gear & Equipment System**: Comprehensive inventory management with equipment categories, availability, and costs (Phase 5)
 - **Nuyen & Economy System**: Complete currency management with transactions, lifestyle costs, and equipment purchasing (Phase 5)
 - **Enhanced User Interface**: Beautiful multi-sheet character displays with progress bars, consistent styling, and action buttons (Phase 5)
