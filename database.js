@@ -10,11 +10,19 @@ const Scene = require('./models/Scene');
 const ShadowrunCharacter = require('./models/ShadowrunCharacter');
 const ShadowrunCombat = require('./models/ShadowrunCombat');
 const ShadowrunMagic = require('./models/ShadowrunMagic');
+const ShadowrunCyberware = require('./utils/ShadowrunCyberware');
+const ShadowrunNuyen = require('./utils/ShadowrunNuyen');
+const ShadowrunVehicles = require('./utils/ShadowrunVehicles');
 const { Combat, CombatParticipant, CombatAction } = require('./models/Combat');
 
 // Define relationships
 User.hasMany(Character, { foreignKey: 'user_id' });
 Character.belongsTo(User, { foreignKey: 'user_id' });
+
+// Initialize utility systems
+const cyberwareSystem = new ShadowrunCyberware(sequelize);
+const nuyenSystem = new ShadowrunNuyen(sequelize);
+const vehiclesSystem = new ShadowrunVehicles(sequelize);
 
 // Combat relationships
 User.hasMany(Combat, { foreignKey: 'user_id' });
@@ -49,7 +57,10 @@ const db = {
   ShadowrunMagic,
   Combat,
   CombatParticipant,
-  CombatAction
+  CombatAction,
+  cyberwareSystem,
+  nuyenSystem,
+  vehiclesSystem
 };
 
 // Sync database

@@ -176,6 +176,31 @@ const ShadowrunCharacter = sequelize.define('ShadowrunCharacter', {
   backstory: {
     type: DataTypes.TEXT,
     allowNull: true
+  },
+  
+  // Cyberware & Bioware System
+  cyberware: {
+    type: DataTypes.JSON,
+    allowNull: false,
+    defaultValue: []
+  },
+  essence_loss: {
+    type: DataTypes.FLOAT,
+    allowNull: false,
+    defaultValue: 0,
+    validate: {
+      min: 0,
+      max: 6
+    }
+  },
+  max_essence: {
+    type: DataTypes.FLOAT,
+    allowNull: false,
+    defaultValue: 6,
+    validate: {
+      min: 0,
+      max: 6
+    }
   }
 }, {
   tableName: 'shadowrun_characters',
