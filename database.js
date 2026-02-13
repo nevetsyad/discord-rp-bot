@@ -14,6 +14,7 @@ const ShadowrunCyberware = require('./utils/ShadowrunCyberware');
 const ShadowrunNuyen = require('./utils/ShadowrunNuyen');
 const ShadowrunVehicles = require('./utils/ShadowrunVehicles');
 const { Combat, CombatParticipant, CombatAction } = require('./models/Combat');
+const { DMActionSubmission, DMActionQueue, DMActionHistory } = require('./models/DMActionSubmission');
 
 // Define relationships
 User.hasMany(Character, { foreignKey: 'user_id' });
@@ -58,6 +59,9 @@ const db = {
   Combat,
   CombatParticipant,
   CombatAction,
+  DMActionSubmission,
+  DMActionQueue,
+  DMActionHistory,
   cyberwareSystem,
   nuyenSystem,
   vehiclesSystem
