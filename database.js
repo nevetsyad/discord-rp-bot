@@ -1,5 +1,7 @@
 const dotenv = require('dotenv');
 const sequelize = require('./config/database');
+const { appLogger } = require('./config/security');
+const { retryWithBackoff, isTransientError } = require('./utils/reliability');
 
 dotenv.config();
 
@@ -77,37 +79,56 @@ async function initializeDatabase(options = {}) {
   const allowSync = typeof options.allowSync === 'boolean'
     ? options.allowSync
     : nodeEnv !== 'production';
+  const retryAttempts = Number(options.retryAttempts || process.env.STARTUP_RETRY_ATTEMPTS || 4);
 
   // Production-safe strategy: default to migrate/no runtime schema changes.
   if (nodeEnv === 'production' && ['alter', 'force'].includes(strategy)) {
     throw new Error('Unsafe runtime schema strategy for production. Use migrations instead.');
   }
 
-  if (strategy === 'migrate') {
-    await sequelize.authenticate();
-    initialized = true;
-    return db;
-  }
+  const withRetry = (fn, operation) => retryWithBackoff(fn, {
+    retries: retryAttempts,
+    baseDelayMs: 400,
+    maxDelayMs: 5000,
+    shouldRetry: isTransientError,
+    operation,
+    onRetry: ({ attempt, delayMs, error }) => {
+      appLogger.warn('Retrying database operation', {
+        operation,
+        attempt,
+        delayMs,
+        code: error.code,
+        error: error.message
+      });
+    }
+  });
 
-  if (!allowSync) {
-    await sequelize.authenticate();
+  if (strategy === 'migrate' || !allowSync) {
+    await withRetry(() => sequelize.authenticate(), 'sequelize.authenticate');
     initialized = true;
     return db;
   }
 
   if (strategy === 'force') {
-    await sequelize.sync({ force: true });
+    await withRetry(() => sequelize.sync({ force: true }), 'sequelize.sync.force');
   } else if (strategy === 'alter') {
-    await sequelize.sync({ alter: true });
+    await withRetry(() => sequelize.sync({ alter: true }), 'sequelize.sync.alter');
   } else {
-    await sequelize.sync();
+    await withRetry(() => sequelize.sync(), 'sequelize.sync');
   }
 
   initialized = true;
   return db;
 }
 
+async function closeDatabase() {
+  if (!initialized) return;
+  await sequelize.close();
+  initialized = false;
+}
+
 module.exports = {
   ...db,
-  initializeDatabase
+  initializeDatabase,
+  closeDatabase
 };

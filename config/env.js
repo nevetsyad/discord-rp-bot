@@ -28,6 +28,8 @@ function validateEnv(rawEnv = process.env) {
 
     DB_SCHEMA_STRATEGY: Joi.string().valid(...VALID_SCHEMA_STRATEGIES),
     ALLOW_DB_SYNC: Joi.string().allow('', null),
+    STARTUP_RETRY_ATTEMPTS: Joi.number().integer().min(0).max(10).default(4),
+    HEALTH_PORT: Joi.number().port().default(3001),
 
     JWT_SECRET: Joi.string().min(32).when('NODE_ENV', {
       is: 'production',
