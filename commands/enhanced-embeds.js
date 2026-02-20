@@ -1,4 +1,13 @@
-const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, ComponentType } = require('discord.js');
+const Discord = require('discord.js');
+
+const EmbedCtor = Discord.EmbedBuilder || Discord.MessageEmbed;
+const ActionRowCtor = Discord.ActionRowBuilder || Discord.MessageActionRow;
+const ButtonCtor = Discord.ButtonBuilder || Discord.MessageButton;
+const ButtonStyle = Discord.ButtonStyle || {
+  Primary: 'PRIMARY',
+  Secondary: 'SECONDARY',
+  Success: 'SUCCESS'
+};
 
 /**
  * Enhanced embed utilities for better UI presentation
@@ -28,7 +37,7 @@ class EnhancedEmbeds {
     const archetypePackage = character.getArchetypePackage();
     
     // Main character info embed
-    const mainEmbed = new EmbedBuilder()
+    const mainEmbed = new EmbedCtor()
       .setColor(this.colors.primary)
       .setTitle(`🎭 ${sheet.name} - Shadowrun Character Sheet`)
       .setDescription(`${sheet.race} ${sheet.archetype || 'Custom Character'}`)
@@ -42,7 +51,7 @@ class EnhancedEmbeds {
       .setTimestamp();
 
     // Attributes embed
-    const attributesEmbed = new EmbedBuilder()
+    const attributesEmbed = new EmbedCtor()
       .setColor(this.colors.success)
       .setTitle('🏋️ Physical Attributes')
       .setDescription('Natural physical capabilities')
@@ -55,7 +64,7 @@ class EnhancedEmbeds {
       .setTimestamp();
 
     // Mental attributes embed
-    const mentalEmbed = new EmbedBuilder()
+    const mentalEmbed = new EmbedCtor()
       .setColor(this.colors.magic)
       .setTitle('🧠 Mental Attributes')
       .setDescription('Cognitive and social capabilities')
@@ -67,7 +76,7 @@ class EnhancedEmbeds {
       .setTimestamp();
 
     // Derived stats embed
-    const derivedEmbed = new EmbedBuilder()
+    const derivedEmbed = new EmbedCtor()
       .setColor(this.colors.matrix)
       .setTitle('⚡ Derived Statistics')
       .setDescription('Calculated from base attributes')
@@ -81,7 +90,7 @@ class EnhancedEmbeds {
       .setTimestamp();
 
     // Skills overview embed
-    const skillsEmbed = new EmbedBuilder()
+    const skillsEmbed = new EmbedCtor()
       .setColor(this.colors.cyberware)
       .setTitle('🎭 Skills Overview')
       .addFields(
@@ -92,7 +101,7 @@ class EnhancedEmbeds {
       .setTimestamp();
 
     // Attribute allocation embed
-    const allocationEmbed = new EmbedBuilder()
+    const allocationEmbed = new EmbedCtor()
       .setColor(this.colors.info)
       .setTitle('📋 Attribute Allocation')
       .setDescription('Current attribute point distribution')
@@ -105,7 +114,7 @@ class EnhancedEmbeds {
       .setTimestamp();
 
     // Combat overview embed
-    const combatEmbed = new EmbedBuilder()
+    const combatEmbed = new EmbedCtor()
       .setColor(this.colors.combat)
       .setTitle('⚔️ Combat Readiness')
       .setDescription('Combat capabilities and status')
@@ -199,7 +208,7 @@ class EnhancedEmbeds {
    * Create a success embed with consistent styling
    */
   createSuccessEmbed(title, description, fields = []) {
-    return new EmbedBuilder()
+    return new EmbedCtor()
       .setColor(this.colors.success)
       .setTitle(`✅ ${title}`)
       .setDescription(description)
@@ -211,7 +220,7 @@ class EnhancedEmbeds {
    * Create an error embed with consistent styling
    */
   createErrorEmbed(title, description, fields = []) {
-    return new EmbedBuilder()
+    return new EmbedCtor()
       .setColor(this.colors.error)
       .setTitle(`❌ ${title}`)
       .setDescription(description)
@@ -223,7 +232,7 @@ class EnhancedEmbeds {
    * Create a warning embed with consistent styling
    */
   createWarningEmbed(title, description, fields = []) {
-    return new EmbedBuilder()
+    return new EmbedCtor()
       .setColor(this.colors.warning)
       .setTitle(`⚠️ ${title}`)
       .setDescription(description)
@@ -235,7 +244,7 @@ class EnhancedEmbeds {
    * Create an info embed with consistent styling
    */
   createInfoEmbed(title, description, fields = []) {
-    return new EmbedBuilder()
+    return new EmbedCtor()
       .setColor(this.colors.info)
       .setTitle(`ℹ️ ${title}`)
       .setDescription(description)
@@ -247,24 +256,24 @@ class EnhancedEmbeds {
    * Create pagination buttons for long content
    */
   createPaginationButtons(page, totalPages, customId) {
-    const row = new ActionRowBuilder();
+    const row = new ActionRowCtor();
     
     // Previous button
-    const prevButton = new ButtonBuilder()
+    const prevButton = new ButtonCtor()
       .setCustomId(`${customId}_prev_${page}`)
       .setLabel('⬅️ Previous')
       .setStyle(ButtonStyle.Secondary)
       .setDisabled(page === 1);
     
     // Page info
-    const pageButton = new ButtonBuilder()
+    const pageButton = new ButtonCtor()
       .setCustomId(`${customId}_page_${page}`)
       .setLabel(`Page ${page} of ${totalPages}`)
       .setStyle(ButtonStyle.Secondary)
       .setDisabled(true);
     
     // Next button
-    const nextButton = new ButtonBuilder()
+    const nextButton = new ButtonCtor()
       .setCustomId(`${customId}_next_${page}`)
       .setLabel('Next ➡️')
       .setStyle(ButtonStyle.Secondary)
@@ -279,19 +288,19 @@ class EnhancedEmbeds {
    * Create action buttons for character management
    */
   createCharacterActionButtons(characterId) {
-    const row = new ActionRowBuilder();
+    const row = new ActionRowCtor();
     
-    const viewButton = new ButtonBuilder()
+    const viewButton = new ButtonCtor()
       .setCustomId(`view_char_${characterId}`)
       .setLabel('📋 View Sheet')
       .setStyle(ButtonStyle.Primary);
     
-    const editButton = new ButtonBuilder()
+    const editButton = new ButtonCtor()
       .setCustomId(`edit_char_${characterId}`)
       .setLabel('✏️ Edit')
       .setStyle(ButtonStyle.Secondary);
     
-    const combatButton = new ButtonBuilder()
+    const combatButton = new ButtonCtor()
       .setCustomId(`combat_char_${characterId}`)
       .setLabel('⚔️ Start Combat')
       .setStyle(ButtonStyle.Success);

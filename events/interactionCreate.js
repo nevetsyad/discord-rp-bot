@@ -18,6 +18,14 @@ module.exports = {
 
     if (!command) {
       console.error(`No command matching ${interaction.commandName} was found.`);
+      try {
+        await interaction.reply({
+          content: `❌ Command \`/${interaction.commandName}\` is not available right now. Try \`/help\` to see loaded commands.`,
+          ephemeral: true
+        });
+      } catch (error) {
+        console.error('Failed to send unknown-command feedback:', error.message);
+      }
       return;
     }
 
