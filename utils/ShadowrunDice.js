@@ -267,3 +267,4 @@ class ShadowrunDice {
 }
 
 module.exports = ShadowrunDice;
+module.exports.ShadowrunDice = ShadowrunDice;

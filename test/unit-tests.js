@@ -324,7 +324,7 @@ function testCharacterSheetGeneration() {
     }
 
     // Derived stats validation
-    const expectedInitiative = (sheet.attributes.quickness.current + sheet.attributes.reaction.current);
+    const expectedInitiative = (sheet.attributes.quickness.current + testChar.reaction);
     if (sheet.derived.initiative !== expectedInitiative) {
       console.log(`❌ Initiative calculation wrong: expected ${expectedInitiative}, got ${sheet.derived.initiative}`);
       allPassed = false;
