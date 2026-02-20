@@ -4,11 +4,24 @@ const compression = require('compression');
 const cors = require('cors');
 const morgan = require('morgan');
 const { createLogger, format, transports } = require('winston');
+const jwt = require('jsonwebtoken');
 const { combine, timestamp, printf, colorize, errors, json } = format;
+
+function redactSensitiveMeta(meta) {
+  const cloned = { ...meta };
+  const sensitiveKeys = ['authorization', 'token', 'password', 'secret', 'apiKey'];
+  Object.keys(cloned).forEach((key) => {
+    if (sensitiveKeys.some((s) => key.toLowerCase().includes(s))) {
+      cloned[key] = '[REDACTED]';
+    }
+  });
+  return cloned;
+}
 
 // Custom log format
 const logFormat = printf(({ level, message, timestamp, stack, ...meta }) => {
-  return `${timestamp} [${level}]: ${stack || message} ${Object.keys(meta).length ? JSON.stringify(meta, null, 2) : ''}`;
+  const safeMeta = redactSensitiveMeta(meta);
+  return `${timestamp} [${level}]: ${stack || message} ${Object.keys(safeMeta).length ? JSON.stringify(safeMeta, null, 2) : ''}`;
 });
 
 // Security logger configuration
@@ -230,7 +243,6 @@ const securityMiddleware = {
         securityLogger.warn('Input validation failed', {
           error: error.details[0].message,
           path: error.details[0].path,
-          value: error.details[0].context.value,
           timestamp: new Date().toISOString()
         });
         return res.status(400).json({
@@ -245,7 +257,9 @@ const securityMiddleware = {
 
   // Authentication middleware
   authenticate: (req, res, next) => {
-    const token = req.headers.authorization?.replace('Bearer ', '');
+    const authHeader = req.headers.authorization || '';
+    const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7).trim() : null;
+
     if (!token) {
       securityLogger.warn('Authentication attempt without token', {
         ip: req.ip,
@@ -259,10 +273,45 @@ const securityMiddleware = {
       });
     }
 
-    // TODO: Implement JWT verification
-    // For now, we'll simulate authentication
-    req.user = { id: 'mock-user-id', username: 'test-user' };
-    next();
+    if (!process.env.JWT_SECRET) {
+      securityLogger.error('JWT_SECRET is not configured', {
+        endpoint: req.path,
+        ip: req.ip
+      });
+      return res.status(500).json({
+        success: false,
+        error: 'Server authentication is not configured'
+      });
+    }
+
+    try {
+      const payload = jwt.verify(token, process.env.JWT_SECRET, {
+        algorithms: ['HS256']
+      });
+
+      const userId = payload.sub || payload.userId || payload.id;
+      if (!userId) {
+        throw new Error('Token payload missing subject');
+      }
+
+      req.user = {
+        id: String(userId),
+        username: payload.username,
+        role: payload.role || 'user'
+      };
+
+      return next();
+    } catch (error) {
+      securityLogger.warn('Authentication failed', {
+        reason: error.message,
+        endpoint: req.path,
+        ip: req.ip
+      });
+      return res.status(401).json({
+        success: false,
+        error: 'Invalid or expired token'
+      });
+    }
   },
 
   // Authorization middleware

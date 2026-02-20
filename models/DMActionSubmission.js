@@ -1,5 +1,5 @@
 const { DataTypes } = require('sequelize');
-const sequelize = require('../database');
+const sequelize = require('../config/database');
 
 /**
  * Direct Message Action Submission Model
@@ -96,12 +96,8 @@ const DMActionSubmission = sequelize.define('DMActionSubmission', {
   }
 });
 
-// Indexes for performance
-DMActionSubmission.addIndex(['submissionId'], { unique: true });
-DMActionSubmission.addIndex(['discordUserId', 'status']);
-DMActionSubmission.addIndex(['combatId', 'status']);
-DMActionSubmission.addIndex(['characterId', 'status']);
-DMActionSubmission.addIndex(['submittedAt']);
+// Index declarations are defined at migration/schema level.
+// Avoid runtime mutation calls here to keep startup safe and compatible.
 
 /**
  * DM Action Queue Model

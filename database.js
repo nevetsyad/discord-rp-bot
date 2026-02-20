@@ -67,13 +67,47 @@ const db = {
   vehiclesSystem
 };
 
-// Sync database
-sequelize.sync({ alter: true })
-  .then(() => {
-    console.log('Database synchronized successfully');
-  })
-  .catch(err => {
-    console.error('Error synchronizing database:', err);
-  });
+let initialized = false;
 
-module.exports = db;
+async function initializeDatabase(options = {}) {
+  if (initialized) return db;
+
+  const nodeEnv = options.nodeEnv || process.env.NODE_ENV || 'development';
+  const strategy = options.strategy || (nodeEnv === 'production' ? 'migrate' : 'alter');
+  const allowSync = typeof options.allowSync === 'boolean'
+    ? options.allowSync
+    : nodeEnv !== 'production';
+
+  // Production-safe strategy: default to migrate/no runtime schema changes.
+  if (nodeEnv === 'production' && ['alter', 'force'].includes(strategy)) {
+    throw new Error('Unsafe runtime schema strategy for production. Use migrations instead.');
+  }
+
+  if (strategy === 'migrate') {
+    await sequelize.authenticate();
+    initialized = true;
+    return db;
+  }
+
+  if (!allowSync) {
+    await sequelize.authenticate();
+    initialized = true;
+    return db;
+  }
+
+  if (strategy === 'force') {
+    await sequelize.sync({ force: true });
+  } else if (strategy === 'alter') {
+    await sequelize.sync({ alter: true });
+  } else {
+    await sequelize.sync();
+  }
+
+  initialized = true;
+  return db;
+}
+
+module.exports = {
+  ...db,
+  initializeDatabase
+};
