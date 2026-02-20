@@ -9,7 +9,7 @@
     "setup": "node setup.js",
     "setup:interactive": "node setup-interactive.js",
     "setup:mysql": "node setup-interactive-mysql.js",
-    "test": "node test/unit-tests.js",
+    "test": "node test/unit-tests.js && node test/phase2-regression-tests.js",
     "test:jest": "jest --passWithNoTests",
     "test:watch": "jest --watch --passWithNoTests",
     "security:audit": "npm audit",

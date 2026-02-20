@@ -1,4 +1,4 @@
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder } = require('/builders');
 const { ShadowrunMatrix } = require('../utils/ShadowrunMatrix');
 const { ShadowrunMatrixCombat } = require('../utils/ShadowrunMatrixCombat');
 const { EmbedBuilder } = require('discord.js');

@@ -1,4 +1,4 @@
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder } = require('/builders');
 const EnhancedEmbeds = require('./enhanced-embeds');
 const EnhancedErrorHandling = require('./enhanced-error-handling');
 
