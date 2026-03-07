@@ -1,6 +1,11 @@
 const { SlashCommandBuilder } = require('/builders');
 const { Character } = require('../database');
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } = require('discord.js');
+const {
+  validateCharacterName,
+  validateDescription,
+  validateBackstory
+} = require('../utils/inputValidation');
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -89,9 +94,48 @@ async function createCharacter(interaction, userId) {
   const backstory = interaction.options.getString('backstory');
   const skills = interaction.options.getString('skills');
 
+  // Validate inputs
+  const nameValidation = validateCharacterName(name);
+  if (nameValidation.error) {
+    return await interaction.reply({
+      content: `❌ Invalid character name: ${nameValidation.error.message}`,
+      ephemeral: true
+    });
+  }
+
+  const descValidation = validateDescription(description);
+  if (descValidation.error) {
+    return await interaction.reply({
+      content: `❌ Invalid description: ${descValidation.error.message}`,
+      ephemeral: true
+    });
+  }
+
+  const backstoryValidation = validateBackstory(backstory);
+  if (backstoryValidation.error) {
+    return await interaction.reply({
+      content: `❌ Invalid backstory: ${backstoryValidation.error.message}`,
+      ephemeral: true
+    });
+  }
+
+  const skillsValidation = validateDescription(skills);
+  if (skillsValidation.error) {
+    return await interaction.reply({
+      content: `❌ Invalid skills: ${skillsValidation.error.message}`,
+      ephemeral: true
+    });
+  }
+
+  // Use validated and sanitized values
+  const validatedName = nameValidation.value;
+  const validatedDescription = descValidation.value;
+  const validatedBackstory = backstoryValidation.value;
+  const validatedSkills = skillsValidation.value;
+
   // Check if character already exists
   const existingCharacter = await Character.findOne({
-    where: { name, user_id: userId }
+    where: { name: validatedName, user_id: userId }
   });
 
   if (existingCharacter) {
@@ -100,12 +144,12 @@ async function createCharacter(interaction, userId) {
 
   // Create character
   const character = await Character.create({
-    name,
-    description,
+    name: validatedName,
+    description: validatedDescription,
     personality,
     appearance,
-    backstory,
-    skills,
+    backstory: validatedBackstory,
+    skills: validatedSkills,
     user_id: userId,
     guild_id: interaction.guild.id
   });

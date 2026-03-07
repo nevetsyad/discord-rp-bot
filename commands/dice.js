@@ -1,6 +1,7 @@
 const { SlashCommandBuilder } = require('/builders');
 const { DiceRoll } = require('../database');
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } = require('discord.js');
+const { validateDiceNotation } = require('../utils/inputValidation');
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -22,7 +23,18 @@ module.exports = {
     const guildId = interaction.guild.id;
 
     try {
-      const result = await rollDice(diceNotation, userId, guildId, reason);
+      // Validate dice notation using input validation
+      const validation = validateDiceNotation(diceNotation);
+
+      if (validation.error) {
+        await interaction.reply({
+          content: `❌ Invalid dice notation: ${validation.error.message}`,
+          ephemeral: true
+        });
+        return;
+      }
+
+      const result = await rollDice(validation.value, userId, guildId, reason);
       await interaction.reply({ embeds: [result.embed] });
     } catch (error) {
       console.error('Error in dice command:', error);
